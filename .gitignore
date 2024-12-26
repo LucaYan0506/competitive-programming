@@ -4,6 +4,7 @@
 
 # Ignore .vs directory anywhere in the repository
 **/.vs/
+**/.vscode/
 
 # Ignore all .exe files anywhere in the repository
 **/*.exe
