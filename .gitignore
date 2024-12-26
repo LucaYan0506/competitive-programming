@@ -1,0 +1,9 @@
+# Ignore Visual Studio-generated JSON files anywhere in the repository
+**/*.vcxproj.json
+**/*.filters.json
+
+# Ignore .vs directory anywhere in the repository
+**/.vs/
+
+# Ignore all .exe files anywhere in the repository
+**/*.exe
