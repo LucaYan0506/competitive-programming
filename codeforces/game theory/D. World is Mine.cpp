@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 
-// #define int long long 
+#define int long long 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
@@ -18,41 +18,32 @@ int32_t main(){
     vector<int> res;
     while(t--){
         int n; cin >> n;
-        int distinct_cake_n = 0;
-        vector<int> freq(5001,0);
-        vector<set<int>> freq_inverse(5001);
+        map<int,int> freq;
         for (int i = 0; i < n; i++){
             int temp; cin >> temp;
-            if (freq[temp] == 0)
-                distinct_cake_n++;
             freq[temp]++;
         }
 
-        for (int i = 0; i < 5001; i++)
-            if (freq[i] > 0)
-                freq_inverse[freq[i]].insert(i);
-        
-        int maxi = 0;
-        int cakeAvailable = 0;
-        for (int i = 1; i < 5001; i++){
-            if (freq[i] == 0)
-                continue;
-            cakeAvailable++;
-            freq_inverse[freq[i]].erase(freq_inverse[freq[i]].find(i));
-            auto freq_inverse2 = freq_inverse;
-            int count = cakeAvailable;
-            int localMaxi = 0;
-            for (int j = 1; j <= cakeAvailable && count >= 0; j++){
-                while (freq_inverse2[j].size() > 0 && count - j >= 0){
-                    freq_inverse2[j].erase(--freq_inverse2[j].end());
-                    count-= j;
-                    localMaxi++;
-                }
-            }
-            maxi = max(maxi,localMaxi);
+        vector<int> vect;
+        for (auto x : freq)
+            vect.push_back(x.second);
 
-        }
-        res.push_back(distinct_cake_n - maxi);
+        vector<vector<int>> dp(vect.size(), vector<int>(vect.size() + 1,INT_MIN));
+        dp[0][1] = 1;
+        for (int i = 1; i < vect.size(); i++){
+            for (int x = 1; x <= i + 1; x++){
+                dp[i][x] = max(dp[i - 1][x - 1] + 1, dp[i - 1][x] - vect[i]);
+                if (dp[i][x] < 0)
+                    dp[i][x] = INT_MIN;
+            }
+        }   
+
+        for (int x = 0; x <= vect.size(); x++)
+            if (dp[vect.size() - 1][x] >= 0){
+                res.push_back(x);
+                break;
+            }
+        
     }
 
     for (auto x : res)
