@@ -8,20 +8,18 @@ const int mod = 1e9+7;
 using namespace std;
 
 void fastIO(){
-    cin.tie(0); cout.tie(0); ios_base::sync_with_stdio(0);
+    cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
+void solve(){
+
+}
 
 int32_t main(){
     fastIO();
     int t; cin >> t;
-    vector<int> res;
-    while(t--){
-        
-    }
-
-    for (auto x : res)
-        cout << x << endl;
+    while(t--)
+        solve();
 
     return 0;
 }
