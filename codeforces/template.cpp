@@ -3,6 +3,8 @@
 #define int long long 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define FOR(i, a, b, step) for (int i = (a); i < (b); i += (step))
+#define endl "\n"
 
 const int mod = 1e9+7;
 using namespace std;
@@ -12,7 +14,7 @@ void fastIO(){
 }
 
 void solve(){
-
+    
 }
 
 int32_t main(){

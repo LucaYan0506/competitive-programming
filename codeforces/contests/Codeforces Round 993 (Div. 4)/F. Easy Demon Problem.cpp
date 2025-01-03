@@ -1,69 +1,86 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
-#include<set>
+#include<bits/stdc++.h>
 
+#define int long long 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define FOR(i, a, b, step) for (int i = (a); i < (b); i += (step))
+
+const int mod = 1e9+7;
 using namespace std;
 
-bool bs(vector<pair<int,int>>& nums, int goal, int ai) {
-    int n = nums.size();
-    int left = 0, right = n - 1;
-
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-        if (nums[mid].first + ai * nums[mid].second == goal)
-            return true;
-        else if (nums[mid].first + ai * nums[mid].second < goal)
-            left = mid + 1;
-        else
-            right = mid - 1;
-    }
-    
-    return false;
+void fastIO(){
+    cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-static bool cmp(pair<int,int> a, pair<int,int> b){
-    return a.first < b.first;
-}
-
-int main(){
+void solve(){
+    const int N = 200000;
     int n,m,q; cin >> n >> m >> q;
-    vector<int> a(n);
-    vector<int> b(m);
-    for (int i = 0; i < n; i++) 
-        cin >> a[i];
-    for (int i = 0; i < m; i++)
-        cin >> b[i];
+    int a[n];
+    int b[m];
+    int totA = 0, totB = 0;
+    FOR (i,0,n,1)
+        cin >> a[i], totA += a[i];
+    
+    FOR (i, 0, m, 1)
+        cin >> b[i], totB += b[i];
+    
+    bool existAPos[N + 1] = {false};
+    bool existBPos[N + 1] = {false};
+    bool existANeg[N + 1] = {false};
+    bool existBNeg[N + 1] = {false};
 
-    vector<int> aSum(n);
-    vector<pair<int,int>> bSum(m);
-    int totSum = 0;
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < m; j++){
-            aSum[i] += a[i] * b[j];
-            bSum[j] = {bSum[j].first + a[i] * b[j], b[j]}; 
-            totSum += a[i] * b[j];
-        }
+    for (int x : a){
+        if (abs(totA - x) > N)
+            continue;
+        if (totA - x > 0)
+            existAPos[totA - x] = true;
+        else
+            existANeg[x - totA] = true;
+    }
 
-    sort(bSum.begin(),bSum.end(),cmp);
-    vector<string> res;
-    for (int k = 0; k < q; k++){
-        int query; cin >> query;
+    for (int x : b){
+        if (abs(totB - x) > N)
+            continue;
+        if (totB - x > 0)
+            existBPos[totB - x] = true;
+        else
+            existBNeg[x - totB] = true;
+    }
+
+    FOR (i, 0, q, 1){
+        int x; cin >> x;
         bool flag = false;
-        for (int i = 0; i < n; i++){
-            if (bs(bSum, totSum - aSum[i] - query, a[i])){
-                flag = true;
-                res.push_back("YES");
-                break;
+        FOR (r, 1, (int)(sqrt(abs(x))) + 1, 1){
+            if (abs(x) % r != 0)
+                continue;
+            int c = abs(x) / r;
+            if (x >= 0){
+                   if (existAPos[r] && existBPos[c]) flag = true, cout << "YES" << "\n";
+                   else if (existAPos[c] && existBPos[r]) flag = true, cout << "YES" << "\n";
+                   else if (existANeg[r] && existBNeg[c]) flag = true, cout << "YES" << "\n";
+                   else if (existANeg[c] && existBNeg[r]) flag = true, cout << "YES" << "\n";
+            }else{
+                   if (existANeg[r] && existBPos[c]) flag = true, cout << "YES" << "\n";
+                   else if (existANeg[c] && existBPos[r]) flag = true, cout << "YES" << "\n";
+                   else if (existAPos[r] && existBNeg[c]) flag = true, cout << "YES" << "\n";
+                   else if (existAPos[c] && existBNeg[r]) flag = true, cout << "YES" << "\n";
             }
-        }
 
+            if (flag)
+                break;
+        }
 
         if (!flag)
-            res.push_back("NO");
+            cout << "NO" << "\n";
     }
 
-    for (auto x : res)
-        cout << x << endl;
+}
+
+int32_t main(){
+    fastIO();
+    // int t; cin >> t;
+    // while(t--)
+        solve();
+
     return 0;
 }

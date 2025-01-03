@@ -3,48 +3,35 @@
 #define int long long 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define FOR(i, a, b, step) for (int i = (a); i < (b); i += (step))
+#define endl "\n"
 
 const int mod = 1e9+7;
 using namespace std;
 
 void fastIO(){
-    cin.tie(0); cout.tie(0); ios_base::sync_with_stdio(0);
+    cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-
-
+void solve(){ 
+    int n,k; cin >> n >> k;
+    int sum = 0, curr = 1;
+    int temp = n;
+    while (temp >= k){
+        if (temp & 1)
+            sum += curr;
+        temp >>= 1;
+        curr <<= 1;
+    }
+    int res = (n + 1) * sum / 2;
+    cout << res << endl;
+}
 
 int32_t main(){
     fastIO();
     int t; cin >> t;
-    vector<int> res;
-    while(t--){
-        int n, k; cin >> n >> k;
-        vector<int> ks;
-        int tempN = n;
-        while(tempN > 0){
-
-            tempN /= 2;
-            bool flag = tempN % 2 == 1;
-            int mid = tempN + 1;
-            if (flag)
-                ks.push_back(mid);
-            if(mid < k)
-                break;
-        }
-
-        int ans = 0;
-        for (int i = 1; i <= n; i++)
-            for (auto _k : ks)
-                if (i % _k == 0){
-                    ans += i;
-                    break;
-                }
-        res.push_back(ans);
-    }
-
-    for (auto x : res)
-        cout << x << endl;
+    while(t--)
+        solve();
 
     return 0;
 }
