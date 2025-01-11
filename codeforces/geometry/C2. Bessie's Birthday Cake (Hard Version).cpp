@@ -16,7 +16,26 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n,x,y; cin >> n >> x >> y;
+    vector<int> xs(x);
+    FOR (i, 0, x)
+        cin >> xs[i];
+    sort(all(xs));
+    int count = 0;
+    FOR (i, 1, n){
+        int diff = xs[i] - xs[i - 1];
+        if (diff < 2)
+            continue;
+        
+        if (y >= diff - 2){
+            count += (diff - 1);
+            y -= (diff - 2);
+        }else{
+            count += y;
+            y = 0;
+        }
+    }
+
 }
 
 int32_t main(){
