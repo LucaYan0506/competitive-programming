@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 
-// #define int long long 
+#define int long long 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FOR(i, a, b) for (int i = (a); i < (b); i++)
