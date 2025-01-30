@@ -17,38 +17,28 @@ void fastIO(){
 
 void solve(){
     int n; cin >> n;
-    vector<int> vect(n);
-    FOR(i,0,n)
-        cin >> vect[i];
+    vector<int> a(n);   
+    vector<int> b(n);   
+    int totExtra = 0;
+    
+    FOR(i, 0, n)
+        cin >> a[i];
 
-    int inValid = 0; 
-    FOR (i,0,n){
-        int temp; cin >> temp;
-        vect[i] -= temp;
-        inValid += (vect[i] < 0);
+    FOR (i, 0, n){
+        cin >> b[i];
+        a[i] -= b[i];
+        totExtra += a[i] - 1;
     }
 
-    if (inValid == 0)
-        cout << "YES" << endl;
-    else if (inValid > 1)
-        cout << "NO" << endl;
-    else{
-        int mini = INT_MAX;
-        int amountNeeded = 0;
-        for (int x : vect){
-            if (x < 0){
-                amountNeeded = x * (-1);
-                continue;
-            }
-
-            mini = min(x, mini);
-        }
-        if (amountNeeded <= mini)
-            cout << "YES" << endl;
-        else    
+    FOR (i, 0, n){
+        if (b[i] - a[i] > totExtra){
             cout << "NO" << endl;
+            return;
+        }
     }
-}
+
+    cout << "YES" << endl;
+}   
 
 int32_t main(){
     fastIO();
