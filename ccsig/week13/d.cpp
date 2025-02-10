@@ -29,15 +29,42 @@ vector<int> SieveOfEratosthenes(int n){
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
+vector<int> a, prefixSum;
+string s;
+int rec(int n){
+    if (n < 0)
+        return 0;
+
+    if (s[n] == '0')
+        return rec(n - 1);
+    if (n == 0)
+        return a[0];
+    
+    return max(prefixSum[n - 1], a[n] + rec(n - 1));
+    
+}
 
 void solve(){
-       
+    int n; cin >> n;
+    a = vector<int>(n);
+    prefixSum = vector<int>(n);
+    FOR(i,0,n){
+        cin >> a[i];
+        if (i > 0)
+            prefixSum[i] = prefixSum[i - 1] + a[i];
+        else
+            prefixSum[i] = a[i];
+    }
+
+    cin >> s;
+    cout << rec(n - 1) << endl;
+
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

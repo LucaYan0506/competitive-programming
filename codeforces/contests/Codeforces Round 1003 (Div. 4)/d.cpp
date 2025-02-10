@@ -17,9 +17,6 @@ void fastIO(){
 
 static bool cmp(vector<int>a,vector<int> b){
     int m = a.size() - 1;
-    if (a[m] == b[m]){
-        return a[0] > b[0];
-    }
     return a[m] > b[m];
 }
 
@@ -34,9 +31,12 @@ void solve(){
 
     sort(all(a),cmp);
     int score = 0;
+    int currSum = 0;
     FOR(i,0,n)
-        FOR(j,0,m)
-        score += score + a[i][j];
+        FOR(j,0,m){
+            score += currSum + a[i][j];
+            currSum += a[i][j];
+        }
 
     cout << score << endl;
 }

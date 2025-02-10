@@ -31,13 +31,47 @@ void fastIO(){
 }
 
 void solve(){
-       
+    vector<int> freqS(26);
+    vector<int> freqT(26);
+    string s,t; cin >> s >> t;
+    for (char c : s)
+        freqS[c - 'a']++;
+    for (char c : t)
+        freqT[c - 'a']++;
+    
+    bool automaton = s.size() != t.size();
+    bool array = false;
+
+    FOR(i,0,26){
+        if (freqT[i] > freqS[i]){
+            cout << "need tree" << endl;
+            return;
+        }
+    }
+
+    int i = 0, j = 0;
+    while(i < s.size() && j < t.size()){
+        if (t[j] == s[i])
+            i++, j++;
+        else
+            i++;
+    }
+
+    if (j != t.size())
+        array = true;
+
+    if (array && automaton)
+        cout << "both" << endl;
+    else if (array)
+        cout << "array" << endl;
+    else if (automaton)
+        cout << "automaton" << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

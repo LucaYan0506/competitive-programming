@@ -31,13 +31,32 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n; cin >> n;
+    vector<int> a(n);
+    FOR(i,0,n)
+        cin >> a[i];
+
+    int curr = INT_MAX;
+    int res = 0;
+    FORI(i,n - 1, -1){
+        if (curr == 0)
+            break;
+        if (a[i] < curr){
+            res += a[i];
+            curr = a[i];
+        }else{
+            curr--;
+            res += curr;
+        }
+    }
+    cout << res << endl;
+
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;
