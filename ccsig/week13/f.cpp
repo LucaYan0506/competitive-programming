@@ -32,16 +32,16 @@ void fastIO(){
 
 int dpWeight(vector<string>& nums, int k){
     vector<int> dp(nums.size());
-    dp[0] = nums[0].size();
+    dp[0] = nums[0].size() + 1;
     FOR(i,1,k)
         dp[i] = MAX(dp[i - 1], nums[i].size() + 1);
     
     FOR(i,k,nums.size()){
         dp[i] = nums[i].size() + dp[i - 1] + 1;
-        int maxi = nums[i].size();
+        int maxi = nums[i].size() + 1;
         FOR(j,1,k){
-            maxi = MAX(nums[i - j].size(),maxi);
-            dp[i] = min(dp[i],1 + maxi + dp[i - j - 1]);
+            maxi = MAX(nums[i - j].size() + 1,maxi);
+            dp[i] = min(dp[i],maxi + dp[i - j - 1]);
         }
     }
 
@@ -52,7 +52,7 @@ vector<int> findNewSplitAt(vector<string>& nums, int k){
     int n = nums.size();
     vector<int> dp(n);
     vector<int> splitAt(n);
-    dp[0] = nums[0].size();
+    dp[0] = nums[0].size() + 1;
     splitAt[0] = -1;
 
     FOR(i,1,k)
@@ -64,11 +64,11 @@ vector<int> findNewSplitAt(vector<string>& nums, int k){
         dp[i] = nums[i].size() + dp[i - 1] + 1;
         splitAt[i] = i - 1;
 
-        int maxi = nums[i].size();
+        int maxi = nums[i].size() + 1;
         FOR(j,1,k){
-            maxi = MAX(nums[i - j].size(),maxi);
+            maxi = MAX(nums[i - j].size() + 1,maxi);
             if (maxi + dp[i - j - 1] < dp[i]){
-                dp[i] = maxi + dp[i - j - 1] + 1;
+                dp[i] = maxi + dp[i - j - 1];
                 splitAt[i] = i - j - 1;
             }
         }
