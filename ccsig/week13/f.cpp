@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 
-// #define int long long 
+#define int long long 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FOR(i, a, b) for (int i = (a); i < (b); i++)
@@ -11,25 +11,11 @@
 const int mod = 1e9+7;
 using namespace std;
 
-vector<int> SieveOfEratosthenes(int n){
-    vector<bool> isPrime(n + 1, true);
-    for (int p = 2; p * p <= n; p++) 
-        if (isPrime[p] == true) 
-            for (int i = p * p; i <= n; i += p)
-                isPrime[i] = false;
-
-    vector<int> primes;
-    FOR(i,2, n + 1)
-        if (isPrime[i])
-            primes.push_back(i);
-
-    return primes;
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
+<<<<<<< HEAD
 int dpWeight(vector<string>& nums, int k){
     vector<int> dp(nums.size());
     dp[0] = nums[0].size() + 1;
@@ -104,59 +90,43 @@ int bs(vector<string>& nums, int goal) {
     return r;
 }
 
+=======
+>>>>>>> b8c229813270b59131daf7ed34b1ec8b1eff2927
 void solve(){
-    int n,w; cin >> n >> w;
-    w++; //consider the blank space at end
-    vector<string> s(n);
-    FOR(i,0,n)
-        cin >> s[i];
-    
-    int r = bs(s,w);
-    vector<int> newSplitAt = findNewSplitAt(s,r);
-    vector<int> a;
-    int prev = 0;
-    for (int x : newSplitAt){
-        int maxi = 0;
-        FOR(i,prev,x + 1)
-            maxi = MAX(maxi, s[i].size());
-        a.push_back(maxi);
-        prev = x + 1;
-    }
-    int c = a.size();
+    // FOR(i,5, 25)
+    //     cout << i << " = " << (i*i - i) / 2 << " " << ((i*i - i) / 2) % i <<  endl;
 
-    cout << r << " " << c << endl;
-    for(int x : a)
-        cout << x << " ";
-    cout <<  endl;
-
-    int newSplitAtCopy[newSplitAt.size()];
-    newSplitAtCopy[0] = 0;
-    FOR(i,0,newSplitAt.size() - 1)
-        newSplitAtCopy[i + 1] = newSplitAt[i] + 1;
-    
-    FOR(j,0,r){
-        if (j > 0)
-            cout << endl;
-        FOR(i,0,newSplitAt.size()){
-            auto x = newSplitAtCopy[i];
-            if (x > newSplitAt[i]){//this column already reached the last elem
-                FOR(k,0,a[i] + 1)
-                    cout << " ";
-                continue;
+    int n, p; cin >> n >> p;
+    n;
+    int count = 1;
+    vector<int> edges(n + 1);
+    set<pair<int,int>> visited;
+    int start = 0;
+    int end = start + count;
+    visited.insert({start,end});
+    FOR(i,0, 2*n + p){
+        cout << start + 1 << " " << end + 1 << endl;
+        
+        start = end;
+        end = (start + count) % n;
+        if (visited.count({start,end})){
+            if ((i + 1) % n == 0){
+                count++;
+                start = 0;
+            }else{
+                start++;
             }
-            cout << s[x];
-            FOR(k,0,a[i] - s[x].size() + 1)
-                    cout << " ";
-            
-            newSplitAtCopy[i]++;
+            end = (start + count) % n;
+            visited.insert({start,end});
+            visited.insert({end,start});
         }
     }
 }
 
 int32_t main(){
     fastIO();
-    // int t; cin >> t;
-    // while(t--)
+    int t; cin >> t;
+    while(t--)
         solve();
 
     return 0;

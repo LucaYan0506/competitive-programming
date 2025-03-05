@@ -11,37 +11,21 @@
 const int mod = 1e9+7;
 using namespace std;
 
-vector<int> SieveOfEratosthenes(int n){
-    vector<bool> isPrime(n + 1, true);
-    for (int p = 2; p * p <= n; p++) 
-        if (isPrime[p] == true) 
-            for (int i = p * p; i <= n; i += p)
-                isPrime[i] = false;
-
-    vector<int> primes;
-    FOR(i,2, n + 1)
-        if (isPrime[i])
-            primes.push_back(i);
-
-    return primes;
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
 void solve(){
-    int k,r; cin >> k >> r;
-    int unitDigit = k % 10;
-
-    FOR(i,1,11){
-        if ((unitDigit * i) % 10 == r || (unitDigit * i) % 10 == 0){
-            cout << i << endl;
-            return;
-        }
+    int n; cin >> n;
+    int res = 0;
+    FOR(i,0,n){
+        string str; cin >> str;
+        if (str == "++X" || str == "X++")
+            res++;
+        else
+            res--;
     }
-
-    cout << "10" << endl;
+    cout << res << endl;
 }
 
 int32_t main(){

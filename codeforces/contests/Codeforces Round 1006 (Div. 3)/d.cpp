@@ -32,7 +32,30 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n; cin >> n;
+    vector<int> a(n);
+    FOR(i,0,n)
+        cin >> a[i];
+
+    
+    int left = 0, right = 0;
+    int minCount = 0;
+    FOR(i,0,n){
+        int count=0;
+        FOR(j, i + 1, n){
+            if(a[j]>a[i])
+                count++;
+            else if(a[j] < a[i])
+                count--;
+            if (count < minCount){
+                left = i;
+                right = j;
+                minCount = count;
+            }
+        }
+    }
+    cout << left + 1 << " " << right + 1 << endl;    
+
 }
 
 int32_t main(){

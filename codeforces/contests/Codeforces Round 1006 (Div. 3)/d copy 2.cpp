@@ -31,10 +31,52 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
-       
+vector<int> a;
+vector<int> count;
+
+pair<int,int> func(int i){
+    int n = a.size();
+    int left = i;
+    int right = a.size();
+    while (left < right)
+    {
+        int mid = (right + left) / 2;
+        FOR(j,0, n){
+            if (j <= mid)
+                newCount += (a[i] < a[j]);
+            else
+                newCount += (a[i] > a[j]);
+        }
+    }
+    
 }
 
+
+void solve(){
+    int n; cin >> n;
+    a = vector<int>(n);
+    FOR(i,0,n)
+        cin >> a[i];
+
+    vector<int> count(n,0);
+    FOR(i,0,n)
+        FOR(j,i + 1, n)
+            if (a[i] > a[j])
+                count[i]++;
+    
+    int left = 0, right = 0;
+    int minCount = 0;
+    FOR(i,0,n){
+        auto currCount = func(i);
+        if (currCount.first < minCount){
+            minCount = currCount.first;
+            left = i;
+            right = currCount.second;
+        }
+    }
+    cout << left + 1 << " " << right + 1 << endl;    
+
+}
 int32_t main(){
     fastIO();
     int t; cin >> t;

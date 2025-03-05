@@ -31,15 +31,33 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
+int g(int n);
+int f(int n);
+
+int g(int n){
+    if (n == 0)
+        return 0;
+    
+    cout << "g: " << n << endl; 
+    return f(n - 1);
+}
+int f(int n){
+    if (n == 0)
+        return 0;
+    cout << "f: " << n << endl; 
+    return g(n-1);
+}
+
+
 void solve(){
        
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
-        solve();
-
+    // int t; cin >> t;
+    // while(t--)
+        // solve();
+    f(10);
     return 0;
 }
