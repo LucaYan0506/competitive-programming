@@ -32,7 +32,18 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n,k,p; cin >> n >> k >> p;
+    k = abs(k);
+    int i = 0;
+    int temp = 0;
+    while(temp < k)
+        temp += p, i++;
+
+    if (i <= n)
+        cout << i << endl;
+    else
+        cout << -1 << endl;
+
 }
 
 int32_t main(){

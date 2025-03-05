@@ -32,7 +32,20 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n; cin >> n;
+    string a; cin >> a;
+    int count1 = 0, count2 = 0;
+    for(char c : a)
+        if (c == '-')
+            count1++;
+        else 
+            count2++;
+    
+    int x = (count1 / 2) + (count1 % 2);
+    int y = count1 / 2;
+    int res = x * y * count2;
+
+    cout << res << endl;
 }
 
 int32_t main(){

@@ -11,65 +11,55 @@
 const int mod = 1e9+7;
 using namespace std;
 
-vector<int> SieveOfEratosthenes(int n){
-    vector<bool> isPrime(n + 1, true);
-    for (int p = 2; p * p <= n; p++) 
-        if (isPrime[p] == true) 
-            for (int i = p * p; i <= n; i += p)
-                isPrime[i] = false;
-
-    vector<int> primes;
-    FOR(i,2, n + 1)
-        if (isPrime[i])
-            primes.push_back(i);
-
-    return primes;
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
+
 void solve(){
-    int n,p; cin >> n>> p;
-    p--;
-    string s; cin >> s;
-    vector<char> a(n);
-    FOR(i,0,n){
-        a[i] = s[i];
+    int n, m; cin >> n >> m;
+    vector<vector<int>> edges(n+1, vector<int>(n+1,0));
+    FOR(i,0,m){
+        int a,b,debit;
+        cin >> a >> b >> debit;
+        edges[a][b] += -debit;
     }
 
-    int l = p, r = p; 
-    vector<bool> isInvalid(n);
-    FOR(i,0,n/2)
-        if (a[i] != a[n - i - 1]){
-            isInvalid[i] = true;
-            isInvalid[n - i - 1] = true;
-            if (p < n / 2){
-                l = min(l,i);
-                r = max(r,i);        
-            }else{
-                l = min(l, n - i - 1);
-                r = max(r, n - i - 1);
+    //get credit
+    FOR(a,0,n + 1)
+        FOR(b,0,n + 1)
+            if (edges[a][b] < 0)
+                edges[b][a] += (edges[a][b] * -1);
+
+    FOR(a,0,n + 1){
+        int credit = 0;
+        FOR(b,0,n + 1)
+            if (edges[a][b] > 0)
+                credit += edges[a][b];
+
+        FOR(b,0,n + 1){
+            int debit = edges[a][b];
+            if (debit < 0){
+                // edges[b][a] += (debit * -1);
+                if (credit + debit > 0){
+                    credit += debit;
+                    edges[a][b] = 0;
+                }else{
+                    edges[a][b] += credit;
+                    credit = 0;
+                }
             }
-        }
 
-    
-    int res = (r - p) + (r - l);
-    res = min(res, (p - l) + (r - l)) ;
-    FOR(i,l,r + 1){
-        if (isInvalid[i]){
-            int inverseI = n - i - 1;
-            if (p >= n / 2)
-                inverseI = abs(i - n + 1);
-            int minDist = abs(a[i] - a[inverseI]);
-            minDist = MIN(minDist, abs(a[i] - a[inverseI] + 26));
-            minDist = MIN(minDist, abs(a[i] - a[inverseI] - 26));
-            res += minDist;
         }
     }
- 
+    int res = 0;
+    FOR (a, 0, n + 1)
+        FOR (b,0,n + 1)
+            if (edges[a][b] < 0)
+                res += abs(edges[a][b]);
+    
     cout << res << endl;
+    
 }
 
 int32_t main(){

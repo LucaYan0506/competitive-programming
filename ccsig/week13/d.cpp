@@ -11,54 +11,53 @@
 const int mod = 1e9+7;
 using namespace std;
 
-vector<int> SieveOfEratosthenes(int n){
-    vector<bool> isPrime(n + 1, true);
-    for (int p = 2; p * p <= n; p++) 
-        if (isPrime[p] == true) 
-            for (int i = p * p; i <= n; i += p)
-                isPrime[i] = false;
-
-    vector<int> primes;
-    FOR(i,2, n + 1)
-        if (isPrime[i])
-            primes.push_back(i);
-
-    return primes;
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
-vector<int> a, prefixSum;
-string s;
-int rec(int n){
-    if (n < 0)
-        return 0;
-
-    if (s[n] == '0')
-        return rec(n - 1);
-    if (n == 0)
-        return a[0];
-    
-    return max(prefixSum[n - 1], a[n] + rec(n - 1));
-    
-}
 
 void solve(){
-    int n; cin >> n;
-    a = vector<int>(n);
-    prefixSum = vector<int>(n);
-    FOR(i,0,n){
-        cin >> a[i];
-        if (i > 0)
-            prefixSum[i] = prefixSum[i - 1] + a[i];
-        else
-            prefixSum[i] = a[i];
+    int n,m; cin >> n >> m;
+    int xc,yc; cin >> xc >> yc;
+    int k; cin >> k;
+    vector<vector<int>> vect(k, vector<int>(2));
+    FOR(i,0,k)
+        cin >> vect[i][0] >> vect[i][1];
+
+    int steps = 0;
+    for (auto dir : vect){
+        int xSteps = INT_MAX;
+        int ySteps = INT_MAX;
+        if (dir[0] > 0){
+            int diffx = n - xc;
+            xSteps = diffx / dir[0];
+            if (diffx < 0)
+                xSteps = 0;
+        }else if (dir[0] < 0){
+            int diffx = xc - 1;
+            xSteps = abs(diffx / dir[0]);
+            if (diffx < 0)
+                xSteps = 0;
+        }
+
+        if (dir[1] > 0){
+            int diffy = m - yc;
+            ySteps = diffy / dir[1];
+            if (diffy < 0)
+                ySteps = 0;
+        }else if (dir[1] < 0){
+            int diffy = yc - 1;
+            ySteps = abs(diffy / dir[1]);
+            if (diffy < 0)
+                ySteps = 0;
+        }
+  
+
+        int curr = min(xSteps,ySteps);
+        xc += curr * dir[0];
+        yc += curr * dir[1];
+        steps += curr;
     }
-
-    cin >> s;
-    cout << rec(n - 1) << endl;
-
+    cout << steps << endl;
 }
 
 int32_t main(){

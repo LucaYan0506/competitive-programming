@@ -32,13 +32,34 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n; cin >> n;
+    vector<int> a(n);
+    FOR(i,0,n)
+        cin >> a[i];
+    int res = 0;
+    int maxi = 0;
+
+    FOR(i,0,n){
+        if (maxi < 2){
+            maxi++;
+            continue;
+        }
+
+        if (a[i] == a[i - 1] + a[i - 2])
+            maxi++;
+        else{
+            res = max(maxi,res);
+            maxi = 2;
+        }
+    }
+    res = max(maxi,res);
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

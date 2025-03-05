@@ -7,7 +7,6 @@
 #define FORI(i, a, b) for (int i = (a); i > (b); i--)
 #define endl "\n"
 #define all(x) (x).begin(), (x).end()
-#define oo 1000000000000000000ll
 
 const int mod = 1e9+7;
 using namespace std;
@@ -32,7 +31,15 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int x,y; cin >> x >> y;
+    while(x >= 0){
+        if (x + 1 == y){
+            cout << "YES" << endl;
+            return;
+        }
+        x -= 9;
+    }
+    cout << "NO" << endl;
 }
 
 int32_t main(){

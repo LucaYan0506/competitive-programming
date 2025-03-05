@@ -31,14 +31,52 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
+vector<int> a;
+
+int bs(int left, int goal){
+    int right = a.size();
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
+        if (a[mid] == goal)
+            return mid;
+        else if (a[mid] < goal)
+            left = mid + 1;
+        else 
+            right = mid - 1; 
+    }
+     
+    return -1;
+}
+
 void solve(){
-       
+    int n, k; cin >> n >> k;
+    a = vector<int>(n);
+    FOR(i,0,n)
+        cin >> a[i];
+    
+    sort(all(a));
+    vector<bool> checked(n, false);
+    int res = 0;
+    FOR(i,0,n){
+        if (checked[i])
+            continue;
+
+        res++;
+        checked[i] = true;
+        int temp = bs(i + 1, a[i] * k);
+        if (temp != -1)
+            checked[temp] = true;
+    } 
+
+    cout << res << endl;
+    
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;
