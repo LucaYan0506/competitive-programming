@@ -15,7 +15,7 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-<<<<<<< HEAD
+
 int dpWeight(vector<string>& nums, int k){
     vector<int> dp(nums.size());
     dp[0] = nums[0].size() + 1;
@@ -90,8 +90,7 @@ int bs(vector<string>& nums, int goal) {
     return r;
 }
 
-=======
->>>>>>> b8c229813270b59131daf7ed34b1ec8b1eff2927
+
 void solve(){
     // FOR(i,5, 25)
     //     cout << i << " = " << (i*i - i) / 2 << " " << ((i*i - i) / 2) % i <<  endl;
