@@ -30,11 +30,11 @@ vector<int> SieveOfEratosthenes(int n){
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
-const int T = 100;
-vector<vector<vector<bool>>> statue(8,vector<vector<bool>>(8,vector<bool>(T)));
-vector<vector<vector<int>>> dp(8,vector<vector<int>>(8,vector<int>(T,-1)));
+vector<vector<vector<bool>>> statue(8,vector<vector<bool>>(8,vector<bool>(8)));
+vector<vector<vector<int>>> dp(8,vector<vector<int>>(8,vector<int>(8,-1)));
 
 vector<pair<int,int>> dirs = {
+    {0,0},
     {1,0},
     {0,1},
     {-1,0},
@@ -45,6 +45,31 @@ vector<pair<int,int>> dirs = {
     {1,1},
 };
 
+void printDP(){
+    FOR(t,0,8){
+        cout << "Time: " << t << endl;
+        FOR(i,0,8){
+            FOR(j,0,8)
+                cout << dp[i][j][t] << " ";
+            cout << endl;
+        }
+    }
+
+}   
+
+void printStatue(){
+    FOR(t,0,8){
+        cout << "Statue: " << t << endl;
+        FOR(i,0,8){
+            FOR(j,0,8)
+                cout << statue[i][j][t] << " ";
+            cout << endl;
+        }
+    }
+
+}            
+
+
 bool rec(int i, int j, int t){
     if (i < 0 || i >= 8 || j < 0 || j >= 8 || t < 0)
         return false;
@@ -52,11 +77,12 @@ bool rec(int i, int j, int t){
     if (statue[i][j][t])
         return false;
     
+    if (t > 0 && statue[i][j][t-1])
+        return false;
+        
     if (dp[i][j][t] != -1)
-        if (dp[i][j][t]){
-            cout << i << " " << j << " " << t << endl;
             return dp[i][j][t];
-        }
+
     dp[i][j][t] = false;
     for (auto dir : dirs)
         dp[i][j][t] = dp[i][j][t] || rec(i + dir.first, j + dir.second, t - 1); 
@@ -70,18 +96,23 @@ void solve(){
     FOR(i,0,8)
         cin >> grid[i];
 
-    FOR(t,0,T)
+    FOR(t,0,8)
         FOR(i,t,8)
             FOR(j,0,8)
                 if (grid[i - t][j] == 'S')
-                    statue[i][j][T] = true;
+                    statue[i][j][t] = true;
         
-    FOR(t,0,T)
-        if (rec(0,6,t) == 1 ){
-            cout << "WIN" << endl;
-            return;
+    FOR(i,0,8)
+        FOR(j,0,8){
+            if (rec(i,j,7)){
+                cout << "WIN" << endl;
+                // printDP();
+                // printStatue();
+                return;
+            }
         }
-
+        // printDP();
+        // printStatue();
     cout << "LOSE" << endl;
 
 }

@@ -44,10 +44,10 @@ vector<int> SieveOfEratosthenes(int n){
     return primes;
 }
 
+int manhattan(const Point& a, const Point& b) {
+    return abs(a.i - b.i) + abs(a.j - b.j);
+};
 pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
-    auto manhattan = [](const Point& a, const Point& b) {
-        return abs(a.i - b.i) + abs(a.j - b.j);
-    };
 
     pair<Point, Point> bestPair = make_pair(Point(0, 0), Point(0, 0));
     int maxDistance = -1;
@@ -91,7 +91,46 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n,m; cin >> n >> m;
+    vector<pair<Point,int>> points = {
+        {Point(0,0),oo}, //min sum
+        {Point(0,0),oo}, // min diff
+        {Point(0,0),-oo}, // max diff
+        {Point(0,0),-oo}, // max sum
+    };
+    FOR(i,0,n){
+        string temp; cin >> temp;
+        FOR(j,0,temp.size())
+            if (temp[j] == 'B'){
+                int sum = i + j;
+                int diff = i - j;
+                if (sum < points[0].second)
+                    points[0] = {Point(i + 1, j + 1), sum};
+                if (diff < points[1].second)
+                    points[1] = {Point(i + 1, j + 1), diff};
+                if (diff > points[2].second)
+                    points[2] = {Point(i + 1, j + 1), diff};
+                if (sum > points[3].second)
+                    points[3] = {Point(i + 1, j + 1), sum};
+            }
+    }
+
+    int minDist = oo;
+    Point res;
+    FOR(i,0,n)
+        FOR(j,0,m){
+            int maxDist = -oo;
+            Point p1 = Point(i + 1,j + 1);
+            for(auto &[p2,val] : points)
+                maxDist = max(maxDist, manhattan(p1,p2));
+
+            if (maxDist < minDist){
+                minDist = maxDist;
+                res = p1;
+            }
+        }
+        
+    cout << res.i << " " << res.j << endl;
 }
 
 int32_t main(){

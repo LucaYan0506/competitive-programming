@@ -9,6 +9,7 @@
 #define all(x) (x).begin(), (x).end()
 #define oo 1000000000000000000ll
 
+const double EPS = 1e-9; // float precision
 const int mod = 1e9+7;
 using namespace std;
 
@@ -91,7 +92,29 @@ void fastIO(){
 }
 
 void solve(){
-       
+    int n; cin >> n;
+    vector<int> a(n);
+    FOR(i,0,n)
+        cin >> a[i];
+
+    if (n < 3){
+        cout << 0 << endl;
+        return;
+    }
+    int ans = n - 2;
+
+    FOR(i,0,n)
+        FOR(j,i + 1,n){
+            long double d = (a[j] - a[i]) / (long double)(j - i); //common difference of the AP
+            long double first = a[i] - d*i; //first elem of the AP
+            int cnt = 0;
+            FOR(k,0,n)
+                if (fabs(a[k] - (first + d*k)) > EPS)
+                    cnt++;
+            ans = min(ans,cnt);
+        }
+
+    cout << ans << endl;
 }
 
 int32_t main(){

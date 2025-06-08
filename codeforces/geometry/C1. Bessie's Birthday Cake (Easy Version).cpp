@@ -43,28 +43,15 @@ void solve(){
         cin >> vec[i];
 
     sort(all(vec));
-    vec.push_back(vec[0] + n);
-    int res = max(0ll,x - 2);
 
-    FOR(i,0,x)
+    int res = x - 2;
+
+    FOR(i,0,x-1)
         if (vec[i + 1] - vec[i] == 2)
             res++;
-
-    map<int, int> gapsCount; //gapsCount[3] means number of pairs (vec[i],vec[i+1]) with 3 vertices in between (i.e. vec[i + 1] - vec[i] - 1)
-    FOR(i,0,x)
-        if (vec[i + 1] - vec[i] - 1 > 2)
-            gapsCount[vec[i + 1] - vec[i] - 1]++;
-
-    for (auto [i,val] : gapsCount){
-        if (i % 2 == 0)
-            continue;
-        int count = min(y / (i/2), gapsCount[i]);
-        
-        y -= (i / 2) * count;
-        res += ((i / 2) * 2 + 1) * count;
-    }
-
-    res = min(res + y * 2, n - 2);
+    
+    if (n - vec[x - 1] + vec[0] == 2)
+        res++;
 
     cout << res << endl;
 }
