@@ -18,23 +18,14 @@ mt19937 rng(dev());
 // cout << uni(rng) << endl;
 
 struct Point{
-    int x,y;
+    int i,j;
     Point(){
-        x = -1;
-        y = -1;
+        i = -1;
+        j = -1;
     }
     Point(int first, int second){
-        x = first;
-        y = second;
-    }
-
-    bool operator<(const Point& other) const {
-        if (x != other.x) return x < other.x;
-        return y < other.y;
-    }
-
-    bool operator==(const Point& other) const {
-        return x == other.x && y < other.y;
+        i = first;
+        j = second;
     }
 };
 
@@ -55,7 +46,7 @@ vector<int> SieveOfEratosthenes(int n){
 
 pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
     auto manhattan = [](const Point& a, const Point& b) {
-        return abs(a.x - b.x) + abs(a.y - b.y);
+        return abs(a.i - b.i) + abs(a.j - b.j);
     };
 
     pair<Point, Point> bestPair = make_pair(Point(0, 0), Point(0, 0));
@@ -99,8 +90,22 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+//distance squared between (x,y) and (0,0)
+int euclideDistance(int x, int y){
+    return x*x+y*y;
+}
 
+void solve(){
+    int d,k; cin >> d >> k;
+    int maxi = 0;
+    while(euclideDistance(maxi*k, maxi*k) <= d*d)
+        maxi++;
+    maxi--;
+
+    if (euclideDistance(maxi*k, (maxi+1)*k) <= d*d)
+        cout << "Ashish" << endl;
+    else 
+        cout << "Utkarsh" << endl;
 }
 
 int32_t main(){

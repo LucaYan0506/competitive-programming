@@ -100,7 +100,16 @@ void fastIO(){
 }
 
 void solve(){
+    int ang; cin >> ang;
+    FOR(v,3,998244353 + 1){
+        int t = ang*v;
+        if (t % 180 == 0 && (t / 180) < (v - 1)){
+            cout << v << endl;
+            return;
+        }
+    }
 
+    cout << -1 << endl;
 }
 
 int32_t main(){

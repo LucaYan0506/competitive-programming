@@ -99,14 +99,73 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+struct Line{
+    int a,m,c; //ay=mx+c
+    Line(Point p1, Point p2){
+        pair<int,int> slope = {
+            p1.y - p2.y,
+            p1.x - p2.x,
+        };
 
+        if (slope.first == 0)
+            slope = {0,slope.second/slope.second};
+        if (slope.second == 0)
+            slope = {slope.first/slope.first, 0};
+
+        a = slope.second;
+        m = slope.first;
+        c = a*p1.y - m*p1.x;
+
+        int g = __gcd(a,m);
+        g = gcd(g,c);
+        
+        if (g != 0){
+            a /= g;
+            m /= g;
+            c /= g;
+        }
+
+        if (a < 0 ){
+            a *= -1;
+            m *= -1;
+            c *= -1;
+        }
+    }
+};
+
+
+void solve(){
+    int n; cin >> n;
+    vector<Point> p(n);
+    FOR(i,0,n)
+        cin >> p[i].x >> p[i].y;
+
+    map<pair<int,int>,set<int>> cnt;
+    
+    FOR(i,0,n)
+        FOR(j, i + 1, n){
+            Line l = Line(p[i],p[j]);
+            cnt[{l.a, l.m}].insert(l.c);
+        }
+
+    int k = 0;
+    for(auto &[key,val] : cnt){
+        k += val.size();
+    }
+
+    int res = k * (k - 1) / 2;
+
+    for(auto &[key,val] : cnt){
+        res -= (int)(val.size()) * ((int)(val.size()) - 1) / 2;
+    }
+
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

@@ -8,3 +8,9 @@
 
 # Ignore all .exe files anywhere in the repository
 **/*.exe
+
+## Ignore .venv
+**/.venv
+Pipfile
+
+**/**.html

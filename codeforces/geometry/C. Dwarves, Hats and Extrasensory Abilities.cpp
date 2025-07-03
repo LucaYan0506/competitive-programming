@@ -100,13 +100,49 @@ void fastIO(){
 }
 
 void solve(){
+    int n;cin >> n;
+    vector<int> p1, p2;
+    
+    n--;
+    cout << "1 0" << endl;
+    string first;cin >> first;
+    p1.push_back(0);
+    int k = 1 << 28;
+    string response = first;
 
+    while(n--){
+        int y;
+        if (response == first)
+            y = p1[p1.size() - 1] + k;
+        else 
+            y = p2[p2.size() - 1] - k;
+
+        cout << "1 " << y << endl;
+        cin >> response;
+        if (response == first)
+            p1.push_back(y);
+        else 
+            p2.push_back(y);
+
+        k /= 2;
+    }
+
+    if (p2.size() == 0){
+        cout << "0 " << p1[p1.size() - 1] + 1 << endl;
+        cout << "2 " << p1[p1.size() - 1] + 1<< endl;
+        
+        return;
+    }
+
+    cout << "0 " << p1[p1.size() - 1] << endl;
+    cout << "2 " << p2[p2.size() - 1] << endl;
+    
 }
 
 int32_t main(){
-    fastIO();
-    int t; cin >> t;
-    while(t--)
+    // fastIO();
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

@@ -34,7 +34,7 @@ struct Point{
     }
 
     bool operator==(const Point& other) const {
-        return x == other.x && y < other.y;
+        return x == other.x && y == other.y;
     }
 };
 
@@ -99,14 +99,83 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
+struct Gradient {
+    int num; 
+    int den; 
+
+    Gradient(int numerator, int denominator) : num(numerator), den(denominator) {
+        normalize();
+    }
+
+    void normalize() {
+        if (den < 0) { 
+            den = -den;
+            num = -num;
+        }
+        int g = gcd(num, den);
+        if (g != 0) {
+            num /= g;
+            den /= g;
+        }
+
+    }
+};
+
+bool operator<(const Gradient& lhs, const Gradient& rhs) {
+    if (lhs.num != rhs.num) return lhs.num < rhs.num;
+    return lhs.den < rhs.den;
+}
+
+bool operator==(const Gradient& lhs, const Gradient& rhs) {
+    return lhs.num == rhs.num && lhs.den == rhs.den;
+}
+
 void solve(){
+    int n; cin >> n;
+    vector<Point> p(n);
+    FOR(i,0,n)
+        cin >> p[i].x >> p[i].y;
+
+    map<Gradient,vector<Point>> cnt;
+    FOR(i,0,n)
+        FOR(j,i + 1,n){
+            Gradient temp = Gradient(p[i].y - p[j].y, p[i].x - p[j].x);
+            bool unique = true;
+            for (Point start : cnt[temp]){
+                Gradient g = Gradient(p[i].y - start.y, p[i].x - start.x);
+                if (g == temp || (g.den == temp.den && g.den == 0)){
+                    unique = false;
+                    break;
+                }
+                if (p[i] == start){
+                    unique = false;
+                    break;
+                }
+            }
+            if (unique)
+                cnt[temp].push_back(p[i]);
+
+        }
+
+    int k = 0;
+    for(auto &[key,val] : cnt){
+        k += val.size();
+    }
+
+    int res = k * (k - 1) / 2;
+
+    for(auto &[key,val] : cnt){
+        res -= val.size() * (val.size() - 1) / 2;
+    }
+
+    cout << res << endl;
 
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

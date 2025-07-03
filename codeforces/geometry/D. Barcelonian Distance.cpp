@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
 
 #define int long long 
+#define double long double
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FOR(i, a, b) for (int i = (a); i < (b); i++)
@@ -18,12 +19,12 @@ mt19937 rng(dev());
 // cout << uni(rng) << endl;
 
 struct Point{
-    int x,y;
+    double x,y;
     Point(){
         x = -1;
         y = -1;
     }
-    Point(int first, int second){
+    Point(double first, double second){
         x = first;
         y = second;
     }
@@ -99,14 +100,60 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+bool inRange(double start, double end, double x){
+    if (start > end)
+        return inRange(end, start, x);
+    
+    return start <= x && x <= end;
+}
 
+bool isValid(Point A, Point B, Point p){
+    bool res =  inRange(A.x, B.x, p.x) && inRange(A.y, B.y, p.y);
+    return res;
+}
+
+double calcCartesianDist(Point p1, Point p2){
+    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+}
+
+double calcManhttanDist(Point p1, Point p2){
+    return abs(p1.x - p2.x) + abs(p1.y - p2.y);
+}
+
+void solve(){
+    int a,b,c; cin >> a >> b >> c;
+    Point A,B; cin >> A.x >> A.y >> B.x >> B.y;
+    double minDist = calcManhttanDist(A,B);
+    vector<Point> points = {
+        Point((-b*A.y - c)/a, A.y),
+        Point(A.x, (-a*A.x - c)/b),
+        Point(B.x, (-a*B.x - c)/b),
+        Point((-b*B.y - c)/a, B.y),
+    };
+    set<Point> validPSet;
+    vector<Point> validP;
+    for (auto p : points)
+        if (isValid(A,B,p))
+            validPSet.insert(p);
+
+    for (auto p : validPSet)
+        validP.push_back(p);
+    cout.precision(16);
+    if (validP.size() < 2){
+        cout << minDist << endl;
+        return;
+    }   
+
+    minDist = min(minDist, calcManhttanDist(A,validP[0]) + calcCartesianDist(validP[0], validP[1]) + calcManhttanDist(validP[1], B));
+    minDist = min(minDist, calcManhttanDist(A,validP[1]) + calcCartesianDist(validP[0], validP[1]) + calcManhttanDist(validP[0], B));
+ 
+    cout << minDist << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;
