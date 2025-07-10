@@ -14,9 +14,6 @@ using namespace std;
 
 random_device dev;
 mt19937 rng(dev());
-int get_random(int l, int r) {
-    return uniform_int_distribution<int>(l, r)(rng);
-}
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
@@ -102,14 +99,78 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+struct Square{
+    Point p1,p2,p3,p4;
 
+    Square(){
+        p1 = Point();
+        p2 = Point();
+        p3 = Point();
+        p4 = Point();
+    }
+
+    Square(Point _p1, Point _p2, Point _p3, Point _p4){
+        p1 = _p1;
+        p2 = _p2;
+        p3 = _p3;
+        p4 = _p4;
+    }
+
+    void rotate(){
+        auto temp = p1;
+        p1 = p2;
+        p2 = p3;
+        p3 = p4;
+        p4 = temp;
+    }
+};
+
+bool inRange(int start, int end, int val){
+    if (start > end)
+        return inRange(end, start, val);
+    
+    return start <= val && val <= end;
+}
+
+bool isValid(Square sqr1, int x, int y){
+    return inRange(sqr1.p1.x, sqr1.p3.x, x) && inRange(sqr1.p2.y, sqr1.p4.y, y);
+}
+
+void solve(){
+    Square sqr1, sqr2;
+    cin >> sqr1.p1.x >> sqr1.p1.y >> sqr1.p2.x >> sqr1.p2.y >> sqr1.p3.x >> sqr1.p3.y >> sqr1.p4.x >> sqr1.p4.y;
+    cin >> sqr2.p1.x >> sqr2.p1.y >> sqr2.p2.x >> sqr2.p2.y >> sqr2.p3.x >> sqr2.p3.y >> sqr2.p4.x >> sqr2.p4.y;
+
+    if (sqr1.p1.x == sqr1.p3.x)
+        sqr1.rotate();
+
+    if (sqr2.p1.x == sqr2.p3.x)
+        sqr2.rotate();
+
+    int sqr2DiagonalLenght = abs(sqr2.p1.x - sqr2.p3.x);
+    int top = max(sqr2.p2.y, sqr2.p4.y);
+    int bottom = min(sqr2.p2.y, sqr2.p4.y);
+
+    FOR(y,0, sqr2DiagonalLenght / 2 + 1)
+        FOR(x,-y,y + 1){
+            if (isValid(sqr1, sqr2.p2.x + x,top - y)){
+                cout << "YES" << endl;
+                return;
+            }
+
+            if (isValid(sqr1, sqr2.p2.x + x,bottom + y)){
+                cout << "YES" << endl;
+                return;
+            }
+        }
+        
+    cout << "NO" << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

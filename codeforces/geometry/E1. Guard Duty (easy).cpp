@@ -14,9 +14,6 @@ using namespace std;
 
 random_device dev;
 mt19937 rng(dev());
-int get_random(int l, int r) {
-    return uniform_int_distribution<int>(l, r)(rng);
-}
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
@@ -103,13 +100,24 @@ void fastIO(){
 }
 
 void solve(){
+    int R,B; cin >> R >> B;
+    vector<Point> p1(R),p2(B);
+    FOR(i,0,R)
+        cin >> p1[i].x >> p1[i].y;
+    FOR(i,0,B)
+        cin >> p2[i].x >> p2[i].y;
+
+    if (R==B)
+        cout << "YES" << endl;
+    else 
+        cout << "NO" << endl;
 
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

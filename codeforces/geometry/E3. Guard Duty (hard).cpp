@@ -14,9 +14,6 @@ using namespace std;
 
 random_device dev;
 mt19937 rng(dev());
-int get_random(int l, int r) {
-    return uniform_int_distribution<int>(l, r)(rng);
-}
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
@@ -102,14 +99,39 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+static bool cmp(pair<int,Point> &a, pair<int,Point> &b){
+    return a.second.y < b.second.y;
+}
 
+void solve(){
+    int n; cin >> n;
+     //        index
+    vector<pair<int,Point>> a(n),b(n);
+    FOR(i,0,n){
+        cin >> a[i].second.x >> a[i].second.y;
+        a[i].first = i;
+    }
+    FOR(i,0,n){
+        cin >> b[i].second.x >> b[i].second.y;
+        b[i].first = i;
+    }
+
+    sort(all(a),cmp);
+    sort(all(b),cmp);
+
+
+    vector<int> res(n);
+    FOR(i,0,n)
+        res[a[i].first] = b[i].first;
+    
+    FOR(i,0,n)
+        cout << res[i] + 1 << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

@@ -14,9 +14,6 @@ using namespace std;
 
 random_device dev;
 mt19937 rng(dev());
-int get_random(int l, int r) {
-    return uniform_int_distribution<int>(l, r)(rng);
-}
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
@@ -37,7 +34,7 @@ struct Point{
     }
 
     bool operator==(const Point& other) const {
-        return x == other.x && y == other.y;
+        return x == other.x && y < other.y;
     }
 };
 
@@ -103,13 +100,40 @@ void fastIO(){
 }
 
 void solve(){
+    int n,m,k; cin >> n >> m >> k;
 
+    if (2*m*n % k != 0){
+        cout << "NO" << endl;
+        return;
+    }
+
+    int b,h; 
+
+    int k1 = __gcd(n,k);
+    b = n / k1;
+    k /= k1;
+
+    int k2 = __gcd(m,k);
+    h = m / k2;
+    k /= k2;
+
+    if (k == 1){
+        if (2*b <= n)
+            b = 2*b;
+        else
+            h = 2*h;
+    }
+
+    cout << "YES" << endl;
+    cout << "0 0" << endl;
+    cout << b << " 0" << endl;
+    cout << "0 " << h << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t; cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

@@ -1,49 +1,12 @@
-from bs4 import BeautifulSoup
 import requests
 import json
-
-def readTrFromFile():
-    # The name of the file you saved in Step 1.
-    # Make sure this file is in the same directory as your Python script.
-    file_path = 'mypage.html'
-
-    print(f"Attempting to read from file: {file_path}")
-
-    try:
-        # Use 'with open' to safely open and read the file.
-        # 'r' is for read mode, and 'utf-8' encoding is best for web content.
-        with open(file_path, 'r', encoding='utf-8') as file:
-            soup = BeautifulSoup(file, 'html.parser')
-
-            all_tr_elements = soup.find_all('tr')
-            accepted_problem_elements = soup.find_all('tr', class_='accepted-problem')
-
-            # Get the counts
-            total_tr_count = len(all_tr_elements)
-            accepted_problem_count = len(accepted_problem_elements)
-
-            print(f"Total number of <tr> elements: {total_tr_count}")
-            print(f"Number of <tr> elements with class='accepted-problem': {accepted_problem_count}")
-
-    except FileNotFoundError:
-        print(f"\n❌ ERROR: The file '{file_path}' was not found.")
-        print("Please make sure the file is in the same folder as the script and the name matches.")
-    except Exception as e:
-        print(f"\nAn error occurred: {e}")
-
-
 
 def fetch_api_data(tag):
     url = f'https://codeforces.com/api/problemset.problems?tags={tag}'
 
     try:
-        # Send an HTTP GET request to the API URL
         response = requests.get(url)
-
-        # Raise an exception for bad status codes (4xx or 5xx)
         response.raise_for_status()
-
-        # Convert the JSON response text into a Python dictionary
         data_dict = response.json()
         return data_dict
 
@@ -61,18 +24,53 @@ def fetch_api_data(tag):
     return None
 
 
-def filtered_problem(tag = 'geometry', rating_start = 0, rating_end = 4000):
+def filtered_problem(tag='geometry', rating_start=0, rating_end=4000):
     data = fetch_api_data(tag)
-    problems = data['result']['problems']
-    res = []
-    for problem in problems:
-        if 'rating' in problem.keys() and problem['rating'] >= rating_start and problem['rating'] <= rating_end:
-            res.append(problem)
+    if not data:
+        return []
 
-    return res
+    problems = data['result']['problems']
+    filtered = []
+    for problem in problems:
+        if 'rating' in problem and rating_start <= problem['rating'] <= rating_end:
+            # Use a unique identifier (contestId + index)
+            filtered.append((problem['contestId'], problem['index']))
+    return filtered
+
+
+def get_user_solved_set(username):
+    url = f"https://codeforces.com/api/user.status?handle={username}&from=1&count=100000"
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        solved = set()
+        for sub in data['result']:
+            if sub.get('verdict') == 'OK':
+                problem = sub['problem']
+                solved.add((problem['contestId'], problem['index']))
+        return solved
+    except Exception as e:
+        print(f"Error fetching user submissions: {e}")
+        return set()
+
+
+def progress(username, tag='geometry', rating_start=0, rating_end=4000):
+    tagged_problems = filtered_problem(tag, rating_start, rating_end)
+    solved = get_user_solved_set(username)
+
+    solved_tagged = [p for p in tagged_problems if p in solved]
+
+    print(f"User '{username}' has solved {len(solved_tagged)} out of {len(tagged_problems)} '{tag}' problems ")
+
+
 
 '''
-from temp import filtered_problem
+from utils import filtered_problem, progress
 problems = filtered_problem('geometry',1500,2000)
+
+from utils import progress
+progress(username='Luca0506', tag='geometry', rating_start=1500, rating_end=2000)
 
 '''
