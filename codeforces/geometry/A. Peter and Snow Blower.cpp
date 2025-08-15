@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
 
 #define int long long 
+#define double long double 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FOR(i, a, b) for (int i = (a); i < (b); i++)
@@ -38,6 +39,12 @@ struct Point{
 
     bool operator==(const Point& other) const {
         return x == other.x && y == other.y;
+    }
+
+    Point& operator-=(const Point& other) {
+        x -= other.x;
+        y -= other.y;
+        return *this;
     }
 };
 
@@ -102,14 +109,52 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+int calcDistSqr(Point p1, Point p2){
+    return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
 
+double calcDistLineToOrigin(Point p1, Point p2){
+    // ax + by + c = 0;
+    int a = -(p1.y - p2.y), b = p1.x - p2.x, c = - a*p1.x - p1.y*b;
+    double intersectionX = 0; // if a = 0, it intersect at x = 0
+    if (a != 0)
+        intersectionX = (-a*c*1.0) / (a*a + b*b);
+    if (intersectionX < min(p1.x, p2.x) || intersectionX > max(p1.x, p2.x))
+        return oo;
+    return abs(c) / sqrtl(a*a + b*b);
+}
+
+void solve(){
+    int n; cin >> n;
+    Point p; cin >> p.x >> p.y;
+    vector<Point> v(n);
+    FOR(i,0,n)
+        cin >> v[i].x >> v[i].y;
+
+    int maxi = -oo;
+    double mini = oo;
+
+    FOR(i,0,n){
+        v[i] -= p;
+        maxi = max(maxi, calcDistSqr(Point(0,0), v[i]));
+        mini = min(mini, sqrtl(calcDistSqr(Point(0,0), v[i])));
+    }
+
+    FOR(i,0,n){
+        double d = calcDistLineToOrigin(v[i],v[(i+1) % n]);
+        mini = min(mini,d);
+    }
+
+    const double PI = atan2(0,-1);
+    double res = maxi * PI - mini * mini * PI;
+    cout << setprecision(16);
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

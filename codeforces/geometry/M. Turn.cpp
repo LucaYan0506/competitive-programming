@@ -103,13 +103,26 @@ void fastIO(){
 }
 
 void solve(){
+    int n; cin >> n;
+    if (n < 0)
+        n += 360 * (abs(n) / 360 + 1);
+    
+    n = n % 360;
+    int res = 0;
+    while(n > 45 && n < 315){
+        res++;
+        n -= 90;
+        n += 360; //avoid negative
+        n %= 360; //stay within 0 - 360
+    }
 
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

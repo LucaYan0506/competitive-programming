@@ -102,15 +102,73 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+struct Segment{
+    int num, den, l; //l is length squared
 
+    Segment(){
+        num = -1;
+        den = -1;
+        l = -1;
+    }
+
+    Segment(int _num, int _den, int _l){
+        num = _num;
+        den = _den;
+        l = _l;
+    
+        //normalize
+        int g = gcd(num, den);
+        num = num / g;
+        den = den / g;
+        if (den < 0)
+            den = -den,
+            num = -num;
+
+        //special case
+        if (den == 0 && num != 0)
+            num = 1;
+        if (num == 0 && den != 0)
+            den = 1;
+    }
+
+    bool operator<(const Segment& other) const {
+        if (num != other.num) return num < other.num;
+        if (den != other.den) return den < other.den;
+        return l < other.l;
+    }
+};
+
+int distSquared(Point p1, Point p2){
+    return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y); 
+}
+
+void solve(){
+    int n; cin >> n;
+    vector<Point> p(n);
+    FOR(i,0,n)
+        cin >> p[i].x >> p[i].y;
+
+    map<Segment, int> count;
+
+    FOR(i,0,n){
+        FOR(j,i + 1, n){
+            Segment s = Segment(p[i].y - p[j].y, p[i].x - p[j].x, distSquared(p[i],p[j]));
+            count[s]++;
+        }
+    }
+
+    int res = 0;
+    for (auto [key,val] : count)
+        res += (val - 1) * val / 2;
+    res /= 2;
+    
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t = 1;
-    cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

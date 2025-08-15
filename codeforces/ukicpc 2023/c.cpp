@@ -6,7 +6,8 @@ using namespace std;
 #define int long long
 #define double long double
 typedef long long ll;
-
+const int M_PI = acos(-1);
+ 
 void fast_io()
 {
     ios::sync_with_stdio(0);

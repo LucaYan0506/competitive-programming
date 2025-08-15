@@ -102,14 +102,37 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+static bool cmp(pair<int,int> a, pair<int,int> b){
+    if (a.first == b.first)
+        return a.second > b.second;
+    return a.first > b.first;
+}
 
+void solve(){
+    int n; cin >> n;
+    int x1,x2; cin >> x1 >> x2;
+    vector<pair<int,int>> y(n); // y.first == y1, y.second == y2
+    FOR(i,0,n){
+        int k,b; cin >> k >> b;
+        y[i].first = k * x1 + b;
+        y[i].second = k * x2 + b;
+    }
+ 
+    sort(all(y),cmp);
+
+    FOR(i,0,n - 1)
+        if (y[i].first != y[i + 1].first && y[i].second < y[i + 1].second){
+            cout << "YES" << endl;
+            return;
+        }
+    
+    cout << "NO" << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

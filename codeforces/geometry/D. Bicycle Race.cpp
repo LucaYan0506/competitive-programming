@@ -102,15 +102,62 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+int getDir(Point p1, Point p2){
+    if (p1.x == p2.x){
+        if (p2.y - p1.y > 0)
+            return 0;
+        return 2;
+    }
 
+    if (p2.x - p1.x > 0)
+        return 1;
+    return 3;
+}
+
+// O(n) sol
+void solve1(){
+    int n; cin >> n;
+    vector<Point> p(n + 1);
+    FOR(i,0,n + 1)
+        cin >> p[i].x >> p[i].y;
+
+    int res = 0;
+    int prev = 0;
+    FOR(i,0,n){
+        int curr = getDir(p[i],p[i + 1]);
+
+        //special case
+        if (prev == 0 && curr == 3)
+            prev = 4;
+        if (prev == 3 && curr == 0)
+            curr = 4;
+
+        if (prev - curr == 1) //anticlockwise
+            res++;
+
+        if (curr == 4)
+            curr = 0;
+        prev = curr;
+    }
+
+    cout << res << endl;
+}
+
+// O(1) sol
+void solve(){
+    int n; cin >> n;
+    vector<Point> p(n + 1);
+    FOR(i,0,n + 1)
+        cin >> p[i].x >> p[i].y;
+
+    int res = (n - 4) / 2;
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t = 1;
-    cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
 
 #define int long long 
+#define double long double 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FOR(i, a, b) for (int i = (a); i < (b); i++)
@@ -102,15 +103,22 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+const double PI = atan2(0, -1);
 
+double deg_to_rad(double deg){
+    return deg * PI / 180;
+}
+
+void solve(){
+    int a, b, c; cin >> a >> b >> c;
+	cout << fixed << setprecision(10) << 1.0 * sqrt(2) * a * a * a / 12 + b * b * b * sqrt(2) / 6 + c * c * c * (5 + sqrt(5)) / 24 << endl;
+	
 }
 
 int32_t main(){
     fastIO();
-    int t = 1;
-    cin >> t;
-    while(t--)
+    // int t; cin >> t;
+    // while(t--)
         solve();
 
     return 0;

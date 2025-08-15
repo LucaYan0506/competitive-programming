@@ -21,10 +21,11 @@ int get_random(int l, int r) {
 // cout << uni(rng) << endl;
 
 struct Point{
-    int x,y;
+    int x,y, id;
     Point(){
         x = -1;
         y = -1;
+        id = -1;
     }
     Point(int first, int second){
         x = first;
@@ -56,60 +57,48 @@ vector<int> SieveOfEratosthenes(int n){
     return primes;
 }
 
-pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
-    auto manhattan = [](const Point& a, const Point& b) {
-        return abs(a.x - b.x) + abs(a.y - b.y);
-    };
-
-    pair<Point, Point> bestPair = make_pair(Point(0, 0), Point(0, 0));
-    int maxDistance = -1;
-
-    // List of 4 transformations
-    vector<pair<int, int>> directions = {
-        {1, 1},
-        {1, -1},
-        {-1, 1},
-        {-1, -1}
-    };
-
-    for (auto [dx, dy] : directions) {
-        int maxVal = INT_MIN, minVal = INT_MAX;
-        Point maxPoint, minPoint;
-
-        for (const auto& [x, y] : points) {
-            int val = dx * x + dy * y;
-            if (val > maxVal) {
-                maxVal = val;
-                maxPoint = {x, y};
-            }
-            if (val < minVal) {
-                minVal = val;
-                minPoint = {x, y};
-            }
-        }
-
-        int dist = manhattan(maxPoint, minPoint);
-        if (dist > maxDistance) {
-            maxDistance = dist;
-            bestPair = make_pair(minPoint, maxPoint);
-        }
-    }
-
-    return bestPair;
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+static bool cmp1(Point& p1, Point p2){
+    return p1.x < p2.x;
+}
 
+static bool cmp2(Point& p1, Point p2){
+    return p1.y < p2.y;
+}
+
+static bool cmp3(Point& p1, Point p2){
+    return p1.y > p2.y;
+}
+
+void solve(){
+    int n; cin >> n;
+    vector<Point> p(n);
+    FOR(i,0,n){
+        cin >> p[i].x >> p[i].y;
+        p[i].id = i + 1;
+    }
+    
+    sort(all(p), cmp1); //sort by x
+
+    vector<Point> p1(n/2), p2(n/2);
+    FOR(i,0,n / 2)
+        p1[i] = p[i],
+        p2[i] = p[i + n/2];
+
+    sort(all(p1), cmp2); //ascending by y
+    sort(all(p2), cmp3); //descending by y
+
+    int res = 0;
+    FOR(i,0,n/2)
+        cout << p1[i].id << " " << p2[i].id << endl;
 }
 
 int32_t main(){
     fastIO();
-    int t = 1;
-    cin >> t;
+    int t; cin >> t;
     while(t--)
         solve();
 

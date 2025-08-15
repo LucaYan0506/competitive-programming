@@ -21,14 +21,17 @@ int get_random(int l, int r) {
 // cout << uni(rng) << endl;
 
 struct Point{
-    int x,y;
+    int x,y, dist, id;
     Point(){
         x = -1;
         y = -1;
+        dist = 0;
+        id = -1;
     }
-    Point(int first, int second){
+    Point(int first, int second, int d){
         x = first;
         y = second;
+        dist = d;
     }
 
     bool operator<(const Point& other) const {
@@ -56,60 +59,65 @@ vector<int> SieveOfEratosthenes(int n){
     return primes;
 }
 
-pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
-    auto manhattan = [](const Point& a, const Point& b) {
-        return abs(a.x - b.x) + abs(a.y - b.y);
-    };
-
-    pair<Point, Point> bestPair = make_pair(Point(0, 0), Point(0, 0));
-    int maxDistance = -1;
-
-    // List of 4 transformations
-    vector<pair<int, int>> directions = {
-        {1, 1},
-        {1, -1},
-        {-1, 1},
-        {-1, -1}
-    };
-
-    for (auto [dx, dy] : directions) {
-        int maxVal = INT_MIN, minVal = INT_MAX;
-        Point maxPoint, minPoint;
-
-        for (const auto& [x, y] : points) {
-            int val = dx * x + dy * y;
-            if (val > maxVal) {
-                maxVal = val;
-                maxPoint = {x, y};
-            }
-            if (val < minVal) {
-                minVal = val;
-                minPoint = {x, y};
-            }
-        }
-
-        int dist = manhattan(maxPoint, minPoint);
-        if (dist > maxDistance) {
-            maxDistance = dist;
-            bestPair = make_pair(minPoint, maxPoint);
-        }
-    }
-
-    return bestPair;
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+int calcDistSquared(Point p1, Point p2){
+    return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
+}
 
+static bool cmp(Point p1, Point p2){
+    return p1.dist < p2.dist;
+}
+
+pair<int,int> getSlope(Point p1, Point p2){
+    int dy = p1.y - p2.y, dx = p1.x - p2.x;
+    int g = gcd(dy,dx);
+    dy /= g; dx /= g;
+
+    if (dx < 0)
+        dy = -dy, dx = -dx;
+
+    if (dx == 0 && dy != 0)
+        dy /= dy;
+    if (dx != 0 && dy == 0)
+        dx /= dx;
+
+    return {dy,dx};
+}
+
+void solve(){
+    int n; cin >> n;
+    vector<Point> p(n);
+    FOR(i,0,n){
+        cin >> p[i].x >> p[i].y;
+        p[i].id = i + 1;
+    }
+
+    FOR(i,1,n)
+        p[i].dist = calcDistSquared(p[0],p[i]);
+
+    sort(all(p), cmp);
+
+    cout << p[0].id << " ";
+    cout << p[1].id << " ";
+
+    pair<int,int> slope = getSlope(p[0], p[1]);
+  
+
+    FOR(i,2,n){
+        if (getSlope(p[0],p[i]) != slope){
+            cout << p[i].id << " ";
+            return;
+        }
+    }
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 
