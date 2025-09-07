@@ -123,13 +123,30 @@ void fastIO(){
 }
 
 void solve(){
+    int n, a, b; cin >> n >> a >> b;
+    vector<Point> p(n);
+    FOR(i,0,n){
+        int temp; cin >> temp;
+        cin >> p[i].x >> p[i].y;
+    }
+    map<int,int> mp;
+    map<Point,int> duplicate;
+    int res = 0;
+    FOR(i,0,n){
+        res += mp[a*p[i].x-p[i].y] - duplicate[p[i]]; 
+        mp[a*p[i].x-p[i].y]++;
+        duplicate[p[i]]++;
 
+    }
+    
+    
+    cout << res * 2 << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

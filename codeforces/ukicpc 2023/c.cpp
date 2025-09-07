@@ -1,104 +1,112 @@
-#include <bits/stdc++.h>
-using namespace std;
-#define pb push_back
+#include<bits/stdc++.h>
+
+// #define int long long 
+// #define double long double 
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define FOR(i, a, b) for (int i = (a); i < (b); i++)
+#define FORI(i, a, b) for (int i = (a); i > (b); i--)
+#define endl "\n"
 #define all(x) (x).begin(), (x).end()
-#define sz(x) (int)(x).size()
-#define int long long
-#define double long double
-typedef long long ll;
-const int M_PI = acos(-1);
- 
-void fast_io()
-{
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
+#define oo 1000000000000000000ll
+
+const int mod = 1e9+7;
+using namespace std;
+
+random_device dev;
+mt19937 rng(dev());
+int get_random(int l, int r) {
+    return uniform_int_distribution<int>(l, r)(rng);
+}
+// uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
+// cout << uni(rng) << endl;
+
+struct Point{
+    int x,y;
+    Point(){
+        x = -1;
+        y = -1;
+    }
+    Point(int first, int second){
+        x = first;
+        y = second;
+    }
+
+    bool operator<(const Point& other) const {
+        if (x != other.x) return x < other.x;
+        return y < other.y;
+    }
+
+    bool operator==(const Point& other) const {
+        return x == other.x && y == other.y;
+    }
+};
+
+vector<int> SieveOfEratosthenes(int n){
+    vector<bool> isPrime(n + 1, true);
+    for (int p = 2; p * p <= n; p++) 
+        if (isPrime[p] == true) 
+            for (int i = p * p; i <= n; i += p)
+                isPrime[i] = false;
+
+    vector<int> primes;
+    FOR(i,2, n + 1)
+        if (isPrime[i])
+            primes.push_back(i);
+
+    return primes;
 }
 
-const ll oo = 1e9;
+void fastIO(){
+    cin.tie(nullptr); ios_base::sync_with_stdio(false);
+}
 vector<double> a;
-double r = 1000;
-
-double degreeToRadiant(double x){
-    return x * M_PI / (double)180 ;
+const double PI = acosl(-1);
+double degToRad(double deg){
+    return (deg / 180.0) * PI;
 }
 
 double calcArea(int i, int j){
-    double angleDiff = abs(a[i] - a[j]);
-    // angleDiff = degreeToRadiant(angleDiff);
-
-    double circleArea = M_PI * angleDiff * r * r / (double)(360) ;
-
-    double alpha = (double)(180 - angleDiff) / (double)2;
-    alpha = degreeToRadiant(alpha);
-
-    double base = abs(cos(alpha)) * r, h = abs(sin(alpha)) *r;
-    double triangleArea = base * h ;
-    angleDiff = degreeToRadiant(angleDiff);
-    double temp = sin(angleDiff);
-    double area = 0.5 * r*r * (angleDiff - sin(angleDiff));
-    return area;
+    double theta = a[i] - a[j];
+    return sin(theta) * 0.5;
 }
 
-void solve()
-{
-    int n, p; cin >> n >> p;
-    a = vector<double>(n);
-    for (int i = 0; i < n; i++)
+// easy version of this problem: D. An overnight dance in discotheque
+void solve(){
+    int n, p; cin >> n >> p; 
+    a = vector<double>(2*n);
+    FOR(i,0,n){
         cin >> a[i];
+        a[i + n] = a[i] + 360;
+        a[i] = degToRad(a[i]);
+        a[i + n] = degToRad(a[i + n]);
+    }
+    double res = -oo;
 
-    vector<double> totArea(n,0);
-    for (int i = 1; i < n; i++)
-        totArea[i] = totArea[i - 1] + calcArea(i,i - 1);
-
-                // area, index of first point picked
-    vector<vector<pair<double,int>>> dp(n, vector<pair<double,int>>(n + 1, {oo,-1}));
-    for (int i = 0; i < n; i++)
-        if (i + 1 <= p)
-            dp[i][i + 1] = {totArea[i], 0};
-
-    for (int i = 0; i < n; i++)
-        dp[i][1] = {0, i};
-
-    for (int i = 0; i < n; i++){
-        for (int k = 2; k <= i + 1; k++){
-
-            for (int j = k - 2; j < i; j++){
-                if (k == p){
-                    if (dp[j][k-1].first + calcArea(i,j) + calcArea(dp[j][k-1].second,i) < dp[i][k].first)
-                        dp[i][k] = {dp[j][k-1].first + calcArea(i,j) + calcArea(dp[j][k-1].second,i), dp[j][k-1].second};
+    FOR(s,0,n){
+        vector<vector<double>> dp(2 * n, vector<double>(p + 1, -oo));
+        dp[s][0] = 0;
+        FOR(i, s, s + n){
+            FOR(j,0,p ){
+                for (int l = i + 1; l <= s + n; l++) {
+                    dp[l][j + 1] = max(dp[l][j + 1], dp[i][j] + sin(a[l] - a[i]) / 2);
                 }
-                else if (k < p){
-                    if (dp[j][k-1].first + calcArea(i,j) < dp[i][k].first)
-                        dp[i][k] = {dp[j][k-1].first + calcArea(i,j), dp[j][k-1].second};
-                }
-                int e = calcArea(i,j);
-                int b = calcArea(i,0);
-                if (i == 3)
-                int c = 0;
             }
-
-            
-            
+        }
+        for (int k = 0; k <= p; ++k) {
+            res = max(dp[s + n][k],res);
         }
     }
-
-    double res = M_PI * r * r;
-    double minDP = oo;
-    for (int i = 0; i < n; i++){
-        minDP = min(minDP, dp[i][p].first);
-
-    }
-    cout << res - minDP << endl;
+    cout << setprecision(16);
+    cout << res * 1000000 << endl;
 }
 
-int32_t main()
-{
-    fast_io();
-    int t;
-    // cin>>t;
-    // while(t--)
-    solve();
+int32_t main(){
+    fastIO();
+    int t = 1;
+    // cin >> t;
+    while(t--)
+        solve();
 
     return 0;
 }

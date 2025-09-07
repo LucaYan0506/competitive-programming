@@ -21,17 +21,6 @@ int get_random(int l, int r) {
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
-int customPow (int base, unsigned int exp){
-    int res = 1;
-    while (exp) {
-        if (exp & 1)
-            res *= base;
-        exp >>= 1;
-        base *= base;
-    }
-    return res;
-}
-
 struct Point{
     int x,y;
     Point(){
@@ -123,13 +112,22 @@ void fastIO(){
 }
 
 void solve(){
+    int x1,y1; cin >> x1 >> y1;
+    int x2,y2; cin >> x2 >> y2;
 
+    int n, res = 0; cin >> n;
+    FOR(i,0,n){
+        int a,b,c; cin >> a >> b >> c;
+        res += (a*x1 + b*y1 + c > 0 != a*x2 + b*y2 + c > 0);
+    }
+    cout << res << endl;
+   
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

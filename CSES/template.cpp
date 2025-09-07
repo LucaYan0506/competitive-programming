@@ -129,7 +129,6 @@ void solve(){
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
     while(t--)
         solve();
 

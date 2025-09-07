@@ -122,14 +122,79 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+struct Circle{
+    int x,y,r,level;
+    Circle(){
+        x = 0;
+        y = 0;
+        r = 0;
+        level = 0;
+    }
+};
+static bool cmp(Circle c1, Circle c2){
+    return c1.r > c2.r;
+}
+int distSq(int x1, int y1, int x2, int y2){
+    return (x1 - x2) * (x1 - x2) + (y1 -y2) * (y1 - y2);
+}
 
+bool inside(Circle big, Circle small){
+    int a = distSq(big.x, big.y, small.x, small.y);
+    return distSq(big.x, big.y, small.x, small.y) <= big.r * big.r;
+}
+
+void solve(){
+    int n; cin >> n;
+    vector<Circle> c(n);
+    FOR(i,0,n)
+        cin >> c[i].x >> c[i].y >> c[i].r;
+    sort(all(c), cmp);
+
+    FOR(i,1,n){
+        FORI(j,i-1,-1){
+            if (inside(c[j],c[i])){
+                c[i].level = c[j].level + 1;
+                break;
+            }
+        }
+    }
+
+    vector<int> cnt(n+1); // cnt[i] means tot_area/PI of level i
+    FOR(i,0,n)
+        cnt[c[i].level] += c[i].r * c[i].r;
+
+    // dp[i][0]=val ,dp[i][1]=sign for first half, dp[i][2] sign for second half
+    vector<vector<int>> dp0(n, vector<int>(3)); 
+    vector<vector<int>> dp1(n, vector<int>(3)); 
+    dp0[0] = {cnt[0],1,-1};
+    dp1[0] = {cnt[0],-1,1};
+
+    FOR(i,1,n){
+        int a = dp0[i-1][0] + cnt[i] * dp0[i-1][2];
+        int b = dp1[i-1][0] + cnt[i] * dp1[i-1][2];
+        if (a>b)
+            dp0[i] = {a, dp0[i-1][1], dp0[i-1][2] * -1};
+        else
+            dp0[i] = {b, dp1[i-1][1], dp1[i-1][2] * -1};
+
+
+        a = dp0[i-1][0] + cnt[i] * dp0[i-1][1];
+        b = dp1[i-1][0] + cnt[i] * dp1[i-1][1];
+        if (a>b)
+            dp0[i] = {a, dp0[i-1][1] * -1, dp0[i-1][2]};
+        else
+            dp0[i] = {b, dp1[i-1][1] * -1, dp1[i-1][2]};
+    }
+
+    const double PI = acos(-1);
+    cout << setprecision(20);
+    cout << max(dp0[n-1][0], dp1[n-1][0]) * PI << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

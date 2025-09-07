@@ -122,14 +122,59 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+struct Node{
+    vector<int> edges;
+    int mark; 
+    bool visited;
 
+    Node(){
+        visited=false;
+        mark = -1;
+    }
+};
+vector<Node> nodes;
+bool impossible = false;
+void dfs(int i, int mark = 1){
+    if (nodes[i].visited){
+        if (nodes[i].mark != mark)
+            impossible = true;
+        return;
+    }
+
+    nodes[i].visited = true;
+    nodes[i].mark = mark;
+    if (mark == 1)
+        mark = 2;
+    else 
+        mark = 1;
+    for (int edge : nodes[i].edges)
+        dfs(edge, mark);
+}
+
+void solve(){
+    int n,m; cin >> n >> m;
+    nodes.resize(n + 1);
+    FOR(i,0,m){
+        int a,b; cin >> a >> b;
+        nodes[a].edges.push_back(b);
+        nodes[b].edges.push_back(a);
+    }
+
+    FOR(i,1,n+1)
+        if (!nodes[i].visited)
+            dfs(i);
+
+    if (impossible)
+        cout << "IMPOSSIBLE" << endl;
+    else{
+        FOR(i,1,n+1)
+            cout << nodes[i].mark << " ";
+    }
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
     while(t--)
         solve();
 

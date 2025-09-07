@@ -20,18 +20,18 @@ int get_random(int l, int r) {
 }
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
+const int MOD = 1000000007;
 
-int customPow (int base, unsigned int exp){
+int customPow (int base, int exp){
+    base %= MOD;
     int res = 1;
     while (exp) {
-        if (exp & 1)
-            res *= base;
+        if (exp & 1) res = (res * base) % MOD;
+        base = (base * base) % MOD;
         exp >>= 1;
-        base *= base;
     }
     return res;
 }
-
 struct Point{
     int x,y;
     Point(){
@@ -121,15 +121,71 @@ pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
+static bool cmp(pair<int,int> p1, pair<int,int> p2){
+    if (p1.first == p2.first)
+        return p1.second > p2.second;
+    return p1.first < p2.first;
+}
+
+vector<int> fact;
+
+int modInverse(int x) {
+    return customPow(x, MOD-2); // Fermat
+}
+
+int ncr(int n, int r) {
+    int denom = (fact[r] * fact[n-r]) % MOD;
+    int a = modInverse(denom);
+    return fact[n] * modInverse(denom) % MOD;
+}
 
 void solve(){
+    int n,k; cin >> n >> k;
+    vector<pair<int,int>> events(2*n);
+    stack<int> st;
 
+    // precomp
+    fact = vector<int>(n+1);
+    fact[0] = 1;
+    FOR(i,1,n+1)
+        fact[i] = (fact[i - 1] * i) % MOD;
+
+
+    FOR(i,0,n){
+        cin >> events[i].first >> events[i+n].first;
+        events[i].second = 1;  // open
+        events[i+n].second = -1; // close
+    }
+
+    sort(all(events), cmp);
+    int balance = 0;
+    vector<int> cnt(n+1,0); //cnt[i] means that there are cnt[i] points intersecting at least i segments
+    FOR(i,0,2*n){        
+        if (events[i].second == 1)
+            st.push(events[i].first);
+        else{
+            cnt[balance] += events[i].first - st.top() + 1;
+            st.pop();
+        }
+        
+        balance += events[i].second;
+    }
+    int res = 0;
+    FOR(i,k,n){
+        res += ncr(i,k) * (cnt[i] - cnt[i+1]);
+        res %= MOD;
+    }
+    
+    res += ncr(n,k) * cnt[n];
+    res %= MOD;
+
+    cout << res << endl;
 }
 
 int32_t main(){
-    fastIO();
+    fastIO();    
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

@@ -123,7 +123,25 @@ void fastIO(){
 }
 
 void solve(){
+    int n,k; cin >> n >> k;
+    vector<int> a(2*n),b(2*n);
+    FOR(i,0,n)
+        cin >> a[i],
+        a[i+n] = a[i];
+    FOR(i,0,n)
+        cin >> b[i],
+        b[i+n] = b[i];
 
+    int res = 0, curr = 0, extra = 0;
+    FOR(i,0,2*n){
+        extra += a[i] - b[i];
+        curr++;
+        if (extra <= 0){
+            res = max(curr,res);
+            curr = 0, extra = 0;
+        }
+    }
+    cout << res << endl;
 }
 
 int32_t main(){

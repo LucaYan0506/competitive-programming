@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 
-#define int long long 
+#define int unsigned long long 
 #define double long double 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -20,17 +20,6 @@ int get_random(int l, int r) {
 }
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
-
-int customPow (int base, unsigned int exp){
-    int res = 1;
-    while (exp) {
-        if (exp & 1)
-            res *= base;
-        exp >>= 1;
-        base *= base;
-    }
-    return res;
-}
 
 struct Point{
     int x,y;
@@ -76,56 +65,75 @@ vector<int> SieveOfEratosthenes(int n){
     return primes;
 }
 
-pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
-    auto manhattan = [](const Point& a, const Point& b) {
-        return abs(a.x - b.x) + abs(a.y - b.y);
-    };
-
-    pair<Point, Point> bestPair = make_pair(Point(0, 0), Point(0, 0));
-    int maxDistance = -1;
-
-    // List of 4 transformations
-    vector<pair<int, int>> directions = {
-        {1, 1},
-        {1, -1},
-        {-1, 1},
-        {-1, -1}
-    };
-
-    for (auto [dx, dy] : directions) {
-        int maxVal = INT_MIN, minVal = INT_MAX;
-        Point maxPoint, minPoint;
-
-        for (const auto& [x, y] : points) {
-            int val = dx * x + dy * y;
-            if (val > maxVal) {
-                maxVal = val;
-                maxPoint = {x, y};
-            }
-            if (val < minVal) {
-                minVal = val;
-                minPoint = {x, y};
-            }
-        }
-
-        int dist = manhattan(maxPoint, minPoint);
-        if (dist > maxDistance) {
-            maxDistance = dist;
-            bestPair = make_pair(minPoint, maxPoint);
-        }
-    }
-
-    return bestPair;
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
+// bitmask failed
+void solve2(){
+    int n; cin >> n;
+    string s = to_string(n);
+    int len = s.size();
+    vector<int> power10(20);
+    power10[0] = 1;
+    FOR(i,1,20)
+        power10[i] = power10[i - 1] * 10;
 
-void solve(){
+    vector<int> res;
+    int mask = 1 << len;
+    while(mask--){
+        if (mask == 511)
+            int b = 0;
+        int temp = 1 << (len-1), mask_copy = mask;
+        int possibleRes = 0; 
+        int i = 0;
+        while(mask_copy){
+            if (mask_copy & temp){
+                possibleRes += (s[i] - '0') * power10[len-i-1];
+                mask_copy -= temp;
+            }
+            i++;
+            temp = temp >> 1;
+        }
+        int possibleResSize = to_string(possibleRes).size();
+        if (len - possibleRes == 0)
+            continue;
+        int a = possibleRes;
+        possibleRes = possibleRes + possibleRes * power10[len - possibleResSize];
+        if (possibleRes == n)
+            res.push_back(a);
+    }
 
+    sort(all(res));
+    res.erase( unique( all(res)), res.end() );
+    cout << res.size() << endl;
+    FOR(i,0,res.size())
+        cout << res[i] << endl;
 }
 
+
+void solve(){
+    int n; cin >> n;
+    vector<int> power10(20);
+    power10[0] = 1;
+    FOR(i,1,20)
+        power10[i] = power10[i - 1] * 10;
+
+    vector<int> res;
+    FOR(i,1,18){
+        int den = 1 + power10[i];
+        if (den > n)
+            break;
+
+        if (n % den == 0)
+            res.push_back(n/den);
+    }
+
+    sort(all(res));
+    cout << res.size() << endl;
+    FOR(i,0,res.size())
+        cout << res[i] << endl;
+
+}
 int32_t main(){
     fastIO();
     int t = 1;

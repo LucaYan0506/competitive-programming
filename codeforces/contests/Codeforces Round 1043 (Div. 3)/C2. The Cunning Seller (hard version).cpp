@@ -21,17 +21,6 @@ int get_random(int l, int r) {
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
-int customPow (int base, unsigned int exp){
-    int res = 1;
-    while (exp) {
-        if (exp & 1)
-            res *= base;
-        exp >>= 1;
-        base *= base;
-    }
-    return res;
-}
-
 struct Point{
     int x,y;
     Point(){
@@ -123,7 +112,52 @@ void fastIO(){
 }
 
 void solve(){
+    int n, k; cin >> n >> k;
+        //    3^x   cost 
+    vector<pair<int,int>> v;
+    int x = 0;
+    int three_x = 1; //3^x
+    while(three_x <= 1e9l){
+        v.push_back({three_x, three_x*3+x*three_x/3});
+        three_x *= 3;
+        x++;
+    }
 
+    // priority_queue<int> pq;
+    int currSize = 0;
+    vector<int> cnt(v.size() + 1);
+    FORI(i, v.size() - 1, -1){
+        while (v[i].first <= n){
+            n -= v[i].first;
+            cnt[i]++;
+            currSize++;
+        }
+        if (n == 0)
+            break;
+    }   
+
+    if (currSize > k){
+        cout << -1 << endl;
+        return;
+    }
+
+    k -= currSize;
+    FORI(i, cnt.size() - 1, 0){
+        int reduce = min(cnt[i]*2,k - (k%2));
+        reduce /= 2;
+        cnt[i] -= reduce;
+        k -= (reduce * 2);
+
+        cnt[i-1] += (reduce * 3);
+        if (k < 2)
+            break;
+    }
+
+    int res = 0;
+    FORI(i, cnt.size() - 1, -1)
+        res += v[i].second * cnt[i];
+  
+    cout << res << endl;
 }
 
 int32_t main(){

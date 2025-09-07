@@ -122,8 +122,43 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+pair<int,int> calcSlope(Point p1, Point p2){
+    int dy = p1.y - p2.y, dx = p1.x - p2.x;
+    if (dy == 0)
+        dx /= abs(dx);
+    if (dx == 0)
+        dy /= abs(dy);
 
+    int g = gcd(dx,dy);
+    dx /= g; dy /= g;
+
+    // if (dx < 0)
+    //     dy = -dy, dx = -dx;
+
+    return {dy,dx};
+}
+
+void solve(){
+    int n; cin >> n;
+    vector<pair<Point,Point>> p(n);
+    FOR(i,0,n)
+        cin >> p[i].first.x >> p[i].first.y >> p[i].second.x >> p[i].second.y;
+    
+      // slope        cnt
+    map<pair<int,int>, int> cnt1;
+    FOR(i,0,n){
+        auto slope = calcSlope(p[i].first, p[i].second);
+        cnt1[slope]++;
+    }
+
+    int res = 0;
+    for (auto [key,val] : cnt1){
+        pair<int,int> inverse = {-key.first, -key.second};
+        res += val * cnt1[inverse];
+    }
+    res /= 2;
+    cout << res << endl;
+    
 }
 
 int32_t main(){

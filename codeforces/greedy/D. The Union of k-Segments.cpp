@@ -122,14 +122,53 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+static bool cmp(pair<int,int> p1, pair<int,int>p2){
+    if (p1.first == p2.first)
+        return p1.second > p2.second;
+    return p1.first < p2.first;
+}
 
+void solve(){
+    int n,k; cin >> n >> k;
+    vector<pair<int,int>> events(n*2);
+    FOR(i,0,n){
+        cin >> events[i].first >> events[i + n].first;
+        events[i].second = 1; //open
+        events[i+n].second = -1; // close
+    }
+
+    sort(all(events), cmp);
+    int balance = 0;
+    int s = -1;
+    vector<pair<int,int>> res;
+    FOR(i,0,2*n){
+        balance += events[i].second;
+        if (balance == k && events[i].second == 1)
+            s = events[i].first;
+        if (balance == k - 1 && events[i].second == -1){
+            if (res.size() > 0 && res.back().second == s)
+                res.back().second = events[i].first;
+            else
+                res.push_back({s,events[i].first});
+            s = -1;
+        }
+    }
+    if (s != -1){
+        if (res.size() > 0 && res.back().second == s)
+            res.back().second = events.back().first;
+        else
+            res.push_back({s,events.back().first});   
+    }
+    
+    cout << res.size() << endl;
+    FOR(i,0,res.size())
+        cout << res[i].first << " " << res[i].second << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

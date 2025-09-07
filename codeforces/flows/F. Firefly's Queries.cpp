@@ -123,7 +123,29 @@ void fastIO(){
 }
 
 void solve(){
+    int n,q; cin >> n >> q;
+    vector<int> a(n);
+    FOR(i,0,n)
+        cin >> a[i];
 
+    vector<int> prefixSum(2*n + 1);
+    prefixSum[0] = 0;
+    FOR(i,1,2*n + 1)
+        prefixSum[i] = prefixSum[i - 1] + a[(i-1) % n];
+
+    FOR(i,0,q){
+        int l,r; cin >> l >> r;
+        l--,r--;
+
+        int ll = l % n + l/n;
+        int lr = ll + (n - l % n);
+        int rr = r%n + r/n + 1; 
+        int rl = r/n;
+
+        int mid = r/n - l/n - 1;
+
+        cout << prefixSum[n] * mid + prefixSum[lr] - prefixSum[ll] + prefixSum[rr] - prefixSum[rl] << endl;
+    }
 }
 
 int32_t main(){

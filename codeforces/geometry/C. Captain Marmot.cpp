@@ -21,17 +21,6 @@ int get_random(int l, int r) {
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
-int customPow (int base, unsigned int exp){
-    int res = 1;
-    while (exp) {
-        if (exp & 1)
-            res *= base;
-        exp >>= 1;
-        base *= base;
-    }
-    return res;
-}
-
 struct Point{
     int x,y;
     Point(){
@@ -122,14 +111,80 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+void rotate(pair<Point,Point> &p){
+    Point newP = p.first - p.second; // let home = (0,0)
+    newP = {-newP.y, newP.x}; // rotate
 
+    p.first = newP + p.second;
+}
+
+int calcDistSq(Point p1, Point p2){
+    return (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y);
+}
+
+bool valid(vector<Point> p){
+    int l = oo;
+    FOR(i,0,4)
+        FOR(j,i + 1,4)
+            l = min(l, calcDistSq(p[i],p[j]));
+
+    FOR(i,0,4){
+        int cnt1 = 0, cnt2 = 0;
+        FOR(j,0,4)
+            if (calcDistSq(p[i],p[j]) == l)
+                cnt1++;
+            else if (calcDistSq(p[i],p[j]) == 2*l)
+                cnt2++;
+
+        if (cnt1 != 2 || cnt2 != 1)
+            return false;
+    }
+
+    return true;
+}
+
+void solve(){
+    int n; cin >> n;  //x y  home 
+    vector<vector<pair<Point,Point>>> p(n, vector<pair<Point,Point>>(4));
+    FOR(i,0,n)
+        FOR(j,0,4)
+            cin >> p[i][j].first.x >> p[i][j].first.y >> p[i][j].second.x >> p[i][j].second.y;
+
+    FOR(i,0,n){
+        vector<vector<pair<int,Point>>> perm(4);
+        FOR(j,0,4)
+            FOR(k,0,4){
+                perm[j].push_back({k,p[i][j].first});
+                rotate(p[i][j]);
+            }
+        int res = oo;
+        FOR(a1,0,4)
+        FOR(a2,0,4)
+        FOR(a3,0,4)
+        FOR(a4,0,4){
+            int c = perm[0][a1].first + perm[1][a2].first + perm[2][a3].first + perm[3][a4].first;
+            vector<Point> arr = {
+                perm[0][a1].second,
+                perm[1][a2].second,
+                perm[2][a3].second,
+                perm[3][a4].second,
+            };
+            if (valid(arr))
+                res = min(res,c);
+        }
+
+        if (res == oo)
+            cout << -1 << endl;
+        else 
+            cout << res << endl;
+    }
+        
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

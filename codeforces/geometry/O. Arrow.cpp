@@ -21,35 +21,15 @@ int get_random(int l, int r) {
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
-int customPow (int base, unsigned int exp){
-    int res = 1;
-    while (exp) {
-        if (exp & 1)
-            res *= base;
-        exp >>= 1;
-        base *= base;
-    }
-    return res;
-}
-
 struct Point{
-    int x,y;
+    double x,y;
     Point(){
-        x = -1;
-        y = -1;
+        x = -1.;
+        y = -1.;
     }
-    Point(int first, int second){
+    Point(double first, double second){
         x = first;
         y = second;
-    }
-
-    bool operator<(const Point& other) const {
-        if (x != other.x) return x < other.x;
-        return y < other.y;
-    }
-
-    bool operator==(const Point& other) const {
-        return x == other.x && y == other.y;
     }
 
     Point operator-(const Point& other) const {
@@ -58,6 +38,10 @@ struct Point{
 
     Point operator+(const Point& other) const {
         return Point(x + other.x, y + other.y);
+    }
+
+    Point operator*(const double other) const {
+        return Point(x * other, y * other);
     }
 };
 
@@ -123,13 +107,30 @@ void fastIO(){
 }
 
 void solve(){
+    Point p,v; cin >> p.x >> p.y >> v.x >> v.y;
+    int a,b,c,d; cin >> a >> b >> c >> d;
+
+    double l = sqrtl(v.x * v.x + v.y * v.y);
+    v = Point(v.x/l, v.y/l); // normalize
+    Point v_per =Point(v.y,-v.x); //v perpendicular
+    vector<Point> res (7);
+    res[0] = p + (v * b);
+    res[1] = p - (v_per * (a/2.));
+    res[2] = p - (v_per * (c/2.));
+    res[3] = res[2] - (v * d);
+    res[5] = p + (v_per * (c/2.));
+    res[4] = res[5] - (v * d);
+    res[6] = p + (v_per * (a/2.));
+    cout << setprecision(20);
+    FOR(i,0,7)
+        cout << res[i].x << " " << res[i].y << endl;
 
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

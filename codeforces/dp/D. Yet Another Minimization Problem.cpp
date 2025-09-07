@@ -123,7 +123,46 @@ void fastIO(){
 }
 
 void solve(){
+    int n; cin >> n;
+    vector<int> a(n),b(n);
+    int totAB = 0, totABsq = 0;
 
+    FOR(i,0,n){
+        cin >> a[i];
+        totAB += a[i];
+        totABsq += a[i]*a[i];
+    }
+    FOR(i,0,n){
+        cin >> b[i],
+        totAB += b[i];;
+        totABsq += b[i]*b[i];
+    }
+
+    const int MAXTOT = 1e4 + 1;
+    vector<vector<bool>> dp(n,vector<bool>(MAXTOT));
+    dp[0][a[0]] = true;
+    dp[0][b[0]] = true;
+
+    FOR(i,1,n){
+        FOR(j,0,MAXTOT){
+            if (j - a[i] < 0 && j - b[i] < 0)
+                continue;
+            if (j - a[i] < 0)
+                dp[i][j] = dp[i - 1][j - b[i]];
+            else if (j - b[i] < 0)
+                dp[i][j] = dp[i - 1][j - a[i]];
+            else
+                dp[i][j] = dp[i - 1][j - a[i]] || dp[i - 1][j - b[i]];
+        }
+    }
+
+    int res = oo;
+    FOR(j,0,MAXTOT)
+        if (dp[n-1][j])
+            res = min(res, j*j + (totAB-j)*(totAB-j));
+
+    res += (n-2)*totABsq;
+    cout << res << endl;
 }
 
 int32_t main(){

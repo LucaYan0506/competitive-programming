@@ -118,18 +118,112 @@ pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
     return bestPair;
 }
 
+pair<int,int> calcSlope(Point p1, Point p2){
+    int dy = p1.y - p2.y;
+    int dx = p1.x - p2.x;
+
+    // special case
+    if (dx == 0)
+        dy /= dy;
+    if (dy == 0)
+        dx /= dx;
+
+    int g = gcd(dy,dx);
+    dy /= g;
+    dx /= g;
+
+    if (dx < 0)
+        dy = -dy, dx = -dx;
+
+    return {dy,dx};
+}
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+int findK(vector<Point> p, int i){
+    map<pair<int,int>,int> cnt;
+    int k = 0;
+    FOR(j,0,p.size())
+        if (i != j){
+            auto slope = calcSlope(p[i],p[j]);
+            cnt[slope]++;
+        }
+    
+    for (auto [key,val] : cnt)
+        if (val >= 2)
+            k++;
 
+    return k;
+}
+
+bool check(vector<Point> p, int i){
+    if (p.size() <= 2)
+        return true;
+
+    int k = findK(p, i);
+    
+    if (k > 2)
+        return false;
+    if (k == 2){
+        if (i > 0)
+            return false;
+        else 
+            return check(p, 1);
+    }
+    if (k == 1){
+        map<pair<int,int>,vector<int>> cnt;
+
+        FOR(j,0,p.size())
+            if (i != j){
+                pair<int,int> slope = calcSlope(p[i],p[j]);
+                cnt[slope].push_back(j);
+            }
+        vector<Point> newP;
+        for (auto [key,val] : cnt){
+            if (val.size() == 1)
+                newP.push_back(p[val[0]]);
+        }
+
+        if (newP.size() <= 2)
+            return true;
+        
+        auto slope = calcSlope(newP[0],newP[1]);
+        FOR(j,2,newP.size()){
+            auto curr = calcSlope(newP[0],newP[j]);
+            if (slope != curr)
+                return false;
+        }
+        
+        return true;
+    }
+    if (k == 0){
+        if (i < 2)
+            return check(p,i + 1);
+        else
+            return false;
+    }
+
+    // impossible to reach
+    return false;
+}
+
+void solve(){
+    int n; cin >> n;
+    vector<Point> p(n);
+    FOR(i,0,n)
+        cin >> p[i].x >> p[i].y;
+
+    if (n <= 4 || check(p, 0))
+        cout << "YES" << endl;
+    else 
+        cout << "NO" << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

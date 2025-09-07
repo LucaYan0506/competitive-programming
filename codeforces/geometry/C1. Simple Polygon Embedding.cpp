@@ -121,9 +121,14 @@ pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
-
+const double PI = acos(-1);
 void solve(){
-
+    int n; cin >> n;
+    n = 2*n;
+    double theta = (n-2)*PI/(2*n);
+    double res = tan(theta);
+    cout << setprecision(20);
+    cout << res << endl;
 }
 
 int32_t main(){

@@ -123,13 +123,34 @@ void fastIO(){
 }
 
 void solve(){
+    int n,l,k; cin >> n >> l >> k;
+    vector<int> d(n), a(n);
+    FOR(i,0,n)
+        cin >> d[i];
+    FOR(i,0,n)
+        cin >> a[i];
+    d.push_back(l);
 
+    vector<vector<int>> dp(n + 1,vector<int>(k+1,oo));
+    dp[0][k] = 0;
+    FOR(i,0,n)
+        FOR(j,0,k+1)
+            FOR(u,i+1, min(i+j+1,n)+1){
+                int delta = u - i - 1;
+                dp[u][j - delta] = min(dp[u][j - delta], dp[i][j] + a[i] * (d[u] - d[i]));
+            }
+            
+    int res = oo;
+    FOR(i,0,k+1)
+        res = min(res, dp[n][i]);
+
+    cout << res;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

@@ -1,7 +1,7 @@
 #include<bits/stdc++.h>
 
-#define int long long 
-#define double long double 
+// #define int long long 
+// #define double long double 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define FOR(i, a, b) for (int i = (a); i < (b); i++)
@@ -20,17 +20,6 @@ int get_random(int l, int r) {
 }
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
-
-int customPow (int base, unsigned int exp){
-    int res = 1;
-    while (exp) {
-        if (exp & 1)
-            res *= base;
-        exp >>= 1;
-        base *= base;
-    }
-    return res;
-}
 
 struct Point{
     int x,y;
@@ -122,14 +111,60 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
+tuple<int,int,int> getLine(Point p1, Point p2){
+    // line: ax+by+c=0 -> dy*x + dx*y + c = 0
+    int dy = p1.y - p2.y, dx = p1.x - p2.x;
+    if (dx < 0)
+        dy = -dy, dx = -dx;
+    int c = -dy*p1.x - dx*p1.y;
 
+    int g = gcd(dy,dx); g = gcd(g,c);
+    dy /= g; dx /= g; c /= g;
+
+    return make_tuple(dy,dx,c);
+}
+
+void solve1(){
+    int n; cin >> n;
+    vector<Point> p(n);
+    
+    FOR(i,0,n)
+        cin >> p[i].x >> p[i].y;
+
+    map<tuple<int,int,int>, set<int>> groupP;
+
+    FOR(i,0,n)
+        FOR(j,i + 1, n){
+            tuple<int,int,int> line = getLine(p[i],p[j]);
+            groupP[line].insert(i);
+            groupP[line].insert(j);
+        }
+
+    int res = n*(n-1)*(n-2)/6;
+    for (auto const [key,val] : groupP){
+        int l = val.size();
+        res -= l*(l-1)*(l-2)/6;
+    }
+    cout << res << endl;
+}
+
+int x[2000],y[2000],res,n;
+void solve(){
+	cin >> n;
+	FOR(i,0,n)
+        cin >> x[i] >> y[i];
+	FOR(i,0,n)
+        FOR(j,i + 1, n)
+            FOR(k, j + 1, n)
+		        if((y[i] - y[j]) * (x[i] - x[k]) != (y[i] - y[k]) * (x[i] - x[j]))res++;
+	
+    cout<< res << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

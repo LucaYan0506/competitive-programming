@@ -122,14 +122,48 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
+vector<bool> visited;
+vector<vector<int>> edges;
+
+void dfs(int i){
+    if (visited[i])
+        return;
+
+    visited[i] = true;
+    for (int edge : edges[i])
+        dfs(edge);
+}
+
 void solve(){
+    int n,m; cin >> n >> m;
+    visited.resize(n+1);
+    edges.resize(n+1);
+    FOR(i,0,m){
+        int a,b; cin >> a >> b;
+        edges[a].push_back(b);
+        edges[b].push_back(a);
+    }
+
+    vector<pair<int,int>> res;
+
+    dfs(1);
+    FOR(i,2,n+1){
+        if (!visited[i]){
+            dfs(i);
+            res.push_back({1,i});
+        }
+    }
+
+    cout << res.size() << endl;
+    for (auto x : res)
+        cout << x.first << " " << x.second << endl;
 
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

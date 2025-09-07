@@ -21,17 +21,6 @@ int get_random(int l, int r) {
 // uniform_int_distribution<std::mt19937::result_type> uni(1,6); // distribution in range [1, 6]
 // cout << uni(rng) << endl;
 
-int customPow (int base, unsigned int exp){
-    int res = 1;
-    while (exp) {
-        if (exp & 1)
-            res *= base;
-        exp >>= 1;
-        base *= base;
-    }
-    return res;
-}
-
 struct Point{
     int x,y;
     Point(){
@@ -122,14 +111,54 @@ void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
-void solve(){
-
+void solve()
+{
+    int n,m; cin >> n >> m;
+    if (n >= m){
+        if (m == 0){
+            cout << 1 << " " << 0 << endl;
+            cout << n << " " << 0 << endl;
+            cout << 0 << " " << 0 << endl;
+            cout << n - 1 << " " << 0 << endl;
+        }
+        else if (m <= 3){
+            cout << n << " " << m << endl;
+            cout << 0 << " " << 0 << endl;
+            cout << n << " " << 0 << endl;
+            cout << 0 << " " << m << endl;
+        }
+        else{
+            cout << 0 << " " << 1 << endl;
+            cout << n << " " << m << endl;
+            cout << 0 << " " << 0 << endl;
+            cout << n << " " << m - 1 << endl;
+        }
+    }else{
+        if (n == 0){
+            cout << 0 << " " << 1 << endl;
+            cout << 0 << " " << m << endl;
+            cout << 0 << " " << 0 << endl;
+            cout << 0 << " " << m - 1 << endl;
+        }
+        else if (n <= 3){
+            cout << 0 << " " << 0 << endl;
+            cout << n << " " << m << endl;
+            cout << n << " " << 0 << endl;
+            cout << 0 << " " << m << endl;
+        }
+        else{
+            cout << n - 1 << " " << m << endl;
+            cout << 0 << " " << 0 << endl;
+            cout << n << " " << m << endl;
+            cout << 1 << " " << 0 << endl;
+        }
+    }
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

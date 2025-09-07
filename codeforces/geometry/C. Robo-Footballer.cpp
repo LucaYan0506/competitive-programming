@@ -121,15 +121,58 @@ pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
+const double PI = acos(-1);
+double custom_y1,custom_y2,yw,xb,yb,radius; 
+double calcY(double x){
+    double theta = atan2(xb-x,yw-yb-radius);
+
+    if (yw - custom_y2 - radius > 0){
+        double k = sqrtl(x*x + (yw-custom_y2-radius)*(yw-custom_y2-radius));
+        double alpha = acos(x/k);
+        // return x * (yw - custom_y2 - radius) / k + sinl(theta)*cosl(theta);
+        return k * sinl(PI/2-theta-alpha);
+    }
+
+
+    double o = radius- (yw -custom_y2), h = sqrtl(o*o+x*x);
+    double alpha = atan2(o,x), beta = theta-alpha;
+    return h*cosl(beta);
+}
+
+double calcY2(double x){
+    double y = x * (yw-yb - radius) / (xb-x);
+    return yw - y - radius;
+}
 
 void solve(){
+    cin >> custom_y1 >> custom_y2 >> yw >> xb >> yb >> radius;
 
+    double l = 0, r = xb, res = -1;
+    FOR(i,0,50){
+        double m1 = l + (r-l)/3., m2 = m1 + (r-l)/3.;
+        
+
+        double firstY = abs(calcY(m1)); //distance between line at theta degree and y2
+
+        double firstY1 =calcY2(m1); // consider the center of the ball at (x,y1)
+        double secondY1 =calcY2(m2);
+         if (secondY1 - radius <= custom_y1 || firstY1 - radius <= custom_y1)
+            r = m2;
+        else if(firstY <= radius || firstY1 + radius >= custom_y2)
+            l = m1;
+        else{
+            res = (m2+m1)/2;
+            break;
+        }
+    } 
+    cout << setprecision(20);
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 
