@@ -111,7 +111,16 @@ void solve(){
                 parentOf[i] = j;
                 break;
             }
-
+        
+    vector<vector<int>> paths(m);
+    // get path from curr to -1
+    FOR(j,0,m){
+        int curr = j;
+        while(curr != -1){
+            paths[j].push_back(curr);
+            curr = parentOf[curr];
+        }
+    }
 
     FOR(i,0,k){
         int a,b; cin >> a >> b;
@@ -120,22 +129,12 @@ void solve(){
 
         FORI(j,m-1,-1)
             if (inside(p[a],fence[j])){//if p[a] inside fence[j]
-                int curr = j;
-                // get path from curr to -1
-                while(parentOf[curr] != -1){
-                    path1.push_back(curr);   
-                    curr = parentOf[curr];
-                }
+                path1 = paths[j];
                 break;
             }
         FORI(j,m-1,-1)
             if (inside(p[b],fence[j])){
-                int curr = j;
-                // get path from curr to -1
-                while(parentOf[curr] != -1){
-                    path2.push_back(curr);   
-                    curr = parentOf[curr];
-                }
+                path2 = paths[j];
                 break;
             }
         
@@ -143,7 +142,7 @@ void solve(){
             path1.pop_back(), path2.pop_back();
         
 
-        cout << path1.size() + path2.size() + 2 << endl;
+        cout << path1.size() + path2.size() << endl;
     }
     
 }

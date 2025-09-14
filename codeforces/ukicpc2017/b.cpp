@@ -232,13 +232,40 @@ void fastIO(){
 }
 
 void solve(){
- 
+    int n; cin >> n;
+    vector<Point> p(n);
+    FOR(i,0,n)
+        cin >> p[i].x >> p[i].y;
+
+    vector<Point> newP = graham_scan(p);
+    double res = oo;
+    FOR(i,0,newP.size()){
+        Line l = Line(newP[i],newP[(i+1)%newP.size()]);
+        double maxDist = -oo;
+        FOR(j,0,newP.size()){
+            if (newP[j] == newP[i] || newP[j] == newP[(i+1)%newP.size()])
+                continue;
+
+            //get dist between segment and newP
+            double dist = calcDist(l,newP[j]);
+
+            // if (normalizedScalarProjection(newP[i], newP[j],newP[(i+1)%newP.size()]) < 0 || normalizedScalarProjection(newP[i], newP[j],newP[(i+1)%newP.size()]) > 1)
+            //     dist = min(sqrtl(calcDistSq(newP[i],newP[j])),sqrtl(calcDistSq(newP[(i+1)%newP.size()],newP[j])));
+
+            maxDist = max(maxDist, dist);
+        }
+
+        res = min(res, maxDist);
+    }
+
+    cout << setprecision(20);
+    cout << res << endl;
 }
 
 int32_t main(){
     fastIO();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--)
         solve();
 

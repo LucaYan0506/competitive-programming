@@ -11,9 +11,6 @@
 #define oo 1000000000000000000ll
 
 const int mod = 1e9+7;
-const double eps = 1e-15;
-const double PI = acos(-1);
-
 using namespace std;
 
 random_device dev;
@@ -55,49 +52,12 @@ struct Point{
         return x == other.x && y == other.y;
     }
 
-    bool operator!=(const Point& other) const {
-        return (x == other.x && y == other.y) == false;
-    }
-
     Point operator-(const Point& other) const {
         return Point(x - other.x, y - other.y);
     }
 
     Point operator+(const Point& other) const {
         return Point(x + other.x, y + other.y);
-    }
-};
-
-struct Line{
-    int a,b,c; //ax+by+c=0
-    Line(){
-        a = -1;
-        b = -1;
-        c = -1;
-    }
-
-    //assuming p1 != p2
-    Line(Point p1, Point p2){
-        int dy = p1.y - p2.y,dx = p1.x - p2.x;
-        
-        //special case
-        if (dy == 0)
-            dx = 1;
-        if (dx == 0)
-            dy = 1;
-
-        //normalize
-        int g = gcd(dy,dx);
-        dy /= g;
-        dx /= g;
-        if (dx < 0){
-            dx = -dx;
-            dy = -dy;
-        }
-
-        a = -dy;
-        b = dx;
-        c = -(p1.x*a + p1.y*b);
     }
 };
 
@@ -158,81 +118,38 @@ pair<Point, Point> farthestManhattanPair(const vector<Point>& points) {
     return bestPair;
 }
 
-// determinant of cross product 
-int detOfCrossProduct(Point origin, Point a, Point b){
-    Point vec1 = a - origin, vec2 = b - origin;
-    return vec1.x*vec2.y - vec1.y*vec2.x;
-}
-
-int dotProduct(Point OA, Point OB){
-    return OA.x*OB.x + OA.y*OB.y;
-}
-
-double calcAngle(Point p, Point base = Point(0,0)){
-    p = p - base;
-    return atan2(p.y,p.x);
-}
-
-int calcDistSq(Point p1, Point p2){
-    return (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y);
-}
-
-double calcDist(Line l, Point p){
-    return fabs((l.a*p.x+l.b*p.y+l.c)/sqrtl(l.a*l.a+l.b*l.b));
-}
-
-vector<Point> graham_scan(vector<Point>&p){
-    Point lowest_p = Point(0,oo);
-    FOR(i,0,p.size())
-        if (lowest_p.y > p[i].y || (p[i].y == lowest_p.y && p[i].x < lowest_p.x))
-            lowest_p = p[i];
-
-    vector<Point> newP;
-    for (auto &x : p) 
-        if (x != lowest_p)
-            newP.push_back(x);
-
-
-    //sort by counter-clockwise order
-    sort(all(newP), [&lowest_p](const Point& a, const Point& b) {
-        int o = detOfCrossProduct(lowest_p, a, b);
-
-        // If points are collinear, keep the farthest one last
-        if (o == 0) 
-            return calcDistSq(lowest_p, a) < calcDistSq(lowest_p, b);
-
-        return o > 0;
-    });
-    vector<Point> res;
-    res.push_back(lowest_p);
-    res.push_back(newP[0]);
-    FOR(i,1,newP.size()){
-        auto curr1 = res[res.size() - 2];
-        auto curr2 = res.back();
-        // use detOfCrossProduct(curr1, curr2, ang_dist[i].first) < 0 to **NOT** filter collinear points
-        if (detOfCrossProduct(curr1, curr2, newP[i]) <= 0)
-            res.pop_back(), i--;
-        else
-            res.push_back(newP[i]);
-    }
-
-    return res;
-}
-
-//calculate the normalized scalar projection of the vector OA onto OB
-//assuming o a b are distict points
-double normalizedScalarProjection(Point o, Point a, Point b){
-    Point OA = a - o;
-    Point OB = b - o; 
-    return (double)dotProduct(OA,OB)/(OB.x*OB.x + OB.y*OB.y);
-}
-
 void fastIO(){
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
 }
 
 void solve(){
- 
+    int n; cin >> n;
+    vector<int> b(n);
+    FOR(i,0,n)
+        cin >> b[i];
+
+    vector<int> cnt(n+1);
+    FOR(i,0,n)
+        cnt[b[i]]++;
+
+    FOR(i,0,n+1)
+        if (cnt[i] != 0 && cnt[i] % i != 0){
+            cout << -1 << endl;
+            return;
+        }
+
+    int k = 1;
+    vector<pair<int,int>> f_inverse(n+1,{-1,0});
+
+    FOR(i,0,n){
+        if (f_inverse[b[i]].second == 0){
+            f_inverse[b[i]] = {k,b[i]};
+            k++;
+        }
+        cout << f_inverse[b[i]].first << " ";
+        f_inverse[b[i]].second--;
+    }
+    cout << endl;
 }
 
 int32_t main(){
